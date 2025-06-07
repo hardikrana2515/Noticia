@@ -40,10 +40,6 @@ app.use("/iNotebook/Notes", noteRouter);
 
 //Server listening
 app.listen(PORT, () => {
-<<<<<<< HEAD:backend/Server.js
   // console.log(`Server is running on  http://localhost:${PORT}`)
 }); 
-=======
-  console.log(`Server is running on  http://localhost:${PORT}`)
-});
->>>>>>> e36a6ac4d6465cd9568571a7d7d18d80b87fb729:backend/server.js
+
