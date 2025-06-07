@@ -16,22 +16,25 @@ const Userstate = ({ children }) => {
   }
 }, []);
 
-    const login = async (email, password) => {
-        // console.log("Sending login:", email, password);
+     const login = async (email, password) => {
+        try {
+            const res = await API.post("user/login", { email, password }, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                withCredentials: true
+            });
 
-        const res = await API.post("user/login", { email, password }, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-            withCredentials: true
-        })
-        if (res.status === 200) {
-            // console.log("Login successful:", res.data);
-            localStorage.setItem("token", res.data.data.token);
-            setAuth(true); 
-
-        } else {
+            if (res.status === 200 && res.data && res.data.data && res.data.data.token) {
+                localStorage.setItem("token", res.data.data.token);
+                setAuth(true); 
+            } else {
+                setAuth(false);
+               
+            }
+        } catch (error) {
             setAuth(false);
+            
         }
     }
 
