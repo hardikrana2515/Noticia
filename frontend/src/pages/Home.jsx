@@ -6,7 +6,6 @@ import Hr from '../components/Hr.jsx'
 import TitelHome from '../components/TitelHome.jsx'
 import Feature_list from '../components/Feature_list.jsx'
 import Auth from '../components/Auth.jsx'
-import { set } from 'date-fns'
 
  const Home = () => {
    
