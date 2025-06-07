@@ -1,0 +1,4 @@
+@font-face {
+  font-family: 'slick';
+  src: url('/fonts/slick.woff') format('woff'); /* note the leading / */
+}
