@@ -1,4 +1,4 @@
-# iNotebook
+# Noticia
 
 A full-stack MERN (MongoDB, Express, React, Node.js) application for managing personal notes with user authentication, profile management, and image upload.
 
