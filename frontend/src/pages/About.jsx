@@ -42,8 +42,8 @@ const About = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="bg-white p-7 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 border border-blue-100/80 group">
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
-                <i className="ri-quill-pen-line"></i>
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i className="fa-solid fa-feather"></i>
               </div>
               <h3 className="text-lg font-bold text-blue-900 mb-2">
                 Effortless Writing & Editing
@@ -54,8 +54,8 @@ const About = () => {
             </div>
 
             <div className="bg-white p-7 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 border border-blue-100/80 group">
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
-                <i className="ri-earth-line"></i>
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i className="fa-solid fa-globe"></i>
               </div>
               <h3 className="text-lg font-bold text-blue-900 mb-2">
                 Public Community Blogs
@@ -66,8 +66,8 @@ const About = () => {
             </div>
 
             <div className="bg-white p-7 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 border border-blue-100/80 group">
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
-                <i className="ri-shield-keyhole-line"></i>
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i className="fa-solid fa-shield-halved"></i>
               </div>
               <h3 className="text-lg font-bold text-blue-900 mb-2">
                 Rock-Solid Privacy & Auth
@@ -78,8 +78,8 @@ const About = () => {
             </div>
 
             <div className="bg-white p-7 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 border border-blue-100/80 group">
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
-                <i className="ri-database-2-line"></i>
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                <i className="fa-solid fa-database"></i>
               </div>
               <h3 className="text-lg font-bold text-blue-900 mb-2">
                 Cloud Sync & Persistence
@@ -128,7 +128,7 @@ const About = () => {
               to="/Notes"
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-7 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 text-sm"
             >
-              <i className="ri-pencil-line text-lg"></i>
+              <i className="fa-solid fa-pencil text-sm"></i>
               Start Writing on Noticia
             </Link>
           </div>

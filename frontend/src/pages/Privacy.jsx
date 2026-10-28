@@ -8,7 +8,7 @@ const Privacy = () => {
         {/* Header */}
         <div className="border-b border-blue-100 pb-6">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 mb-3">
-            <i className="ri-shield-check-line text-sm"></i>
+            <i className="fa-solid fa-shield-halved text-xs"></i>
             User Privacy & Data Protection
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 tracking-tight">
@@ -27,9 +27,9 @@ const Privacy = () => {
         {/* Policy Sections */}
         <div className="space-y-6">
           <section className="bg-blue-50/40 p-6 rounded-2xl border border-blue-100/80">
-            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2">
-              <i className="ri-user-shared-line text-blue-600"></i>
-              1. Information We Collect
+            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2.5">
+              <i className="fa-solid fa-user-shield text-blue-600"></i>
+              <span>1. Information We Collect</span>
             </h2>
             <p className="text-gray-600 text-sm leading-relaxed">
               When creating an account, we collect your name, username, email address, and phone number for authentication and identification. Passwords are never saved in plaintext; they are securely salted and hashed using bcrypt before database storage.
@@ -37,9 +37,9 @@ const Privacy = () => {
           </section>
 
           <section className="bg-blue-50/40 p-6 rounded-2xl border border-blue-100/80">
-            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2">
-              <i className="ri-article-line text-blue-600"></i>
-              2. Notes & Public Blogs
+            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2.5">
+              <i className="fa-solid fa-newspaper text-blue-600"></i>
+              <span>2. Notes & Public Blogs</span>
             </h2>
             <p className="text-gray-600 text-sm leading-relaxed">
               Blog posts you publish on the community feed are visible to other authenticated users on the home page with your author username and avatar. You retain full ownership of your content: only you have the authorization to update or permanently delete your posts.
@@ -47,9 +47,9 @@ const Privacy = () => {
           </section>
 
           <section className="bg-blue-50/40 p-6 rounded-2xl border border-blue-100/80">
-            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2">
-              <i className="ri-cookie-line text-blue-600"></i>
-              3. Sessions & Cookies
+            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2.5">
+              <i className="fa-solid fa-cookie-bite text-blue-600"></i>
+              <span>3. Sessions & Cookies</span>
             </h2>
             <p className="text-gray-600 text-sm leading-relaxed">
               We employ secure JSON Web Tokens (JWT) stored in HTTP-only cookies and local session storage. These tokens are used strictly to maintain your active login state and are never shared with or sold to third-party trackers.
@@ -57,9 +57,9 @@ const Privacy = () => {
           </section>
 
           <section className="bg-blue-50/40 p-6 rounded-2xl border border-blue-100/80">
-            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2">
-              <i className="ri-image-line text-blue-600"></i>
-              4. Media & Profile Images
+            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2.5">
+              <i className="fa-solid fa-image text-blue-600"></i>
+              <span>4. Media & Profile Images</span>
             </h2>
             <p className="text-gray-600 text-sm leading-relaxed">
               Profile images uploaded to Noticia are strictly restricted to image formats (JPEG, PNG, WEBP, GIF) under 5 MB. When you replace your profile picture, earlier versions are automatically deleted from server storage.
@@ -67,9 +67,9 @@ const Privacy = () => {
           </section>
 
           <section className="bg-blue-50/40 p-6 rounded-2xl border border-blue-100/80">
-            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2">
-              <i className="ri-user-settings-line text-blue-600"></i>
-              5. Your Rights & Control
+            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2.5">
+              <i className="fa-solid fa-sliders text-blue-600"></i>
+              <span>5. Your Rights & Control</span>
             </h2>
             <p className="text-gray-600 text-sm leading-relaxed">
               You maintain total control over your account and data. You may review your account info under the My Account page, update your profile picture at any time, or remove any blog post instantly.
@@ -81,9 +81,10 @@ const Privacy = () => {
         <div className="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <Link
             to="/"
-            className="text-blue-600 hover:text-blue-800 font-semibold text-sm transition flex items-center gap-1.5"
+            className="text-blue-600 hover:text-blue-800 font-semibold text-sm transition flex items-center gap-2"
           >
-            <i className="ri-arrow-left-line"></i> Back to Home
+            <i className="fa-solid fa-arrow-left"></i>
+            <span>Back to Home</span>
           </Link>
           <span className="text-xs text-gray-400">
             Noticia Privacy Office • All rights reserved

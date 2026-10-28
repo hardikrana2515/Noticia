@@ -11,8 +11,10 @@ const Alertmessage = ({ message, head, isError = false }) => {
         }`}
       >
         <i
-          className={`text-2xl mt-0.5 ${
-            isError ? "ri-error-warning-line text-red-600" : "ri-checkbox-circle-line text-green-600"
+          className={`text-xl mt-0.5 ${
+            isError
+              ? "fa-solid fa-triangle-exclamation text-red-600"
+              : "fa-solid fa-circle-check text-green-600"
           }`}
         ></i>
         <div>

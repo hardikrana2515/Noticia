@@ -19,8 +19,8 @@ const Navbar = () => {
 
   const getNavClass = (path) =>
     location.pathname === path
-      ? "px-4 py-2 rounded-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition duration-200 font-semibold text-sm flex items-center gap-1.5"
-      : "px-4 py-2 rounded-xl text-blue-900 hover:bg-blue-100 transition duration-200 font-semibold text-sm flex items-center gap-1.5";
+      ? "px-4 py-2 rounded-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition duration-200 font-semibold text-sm flex items-center gap-2"
+      : "px-4 py-2 rounded-xl text-blue-900 hover:bg-blue-100 transition duration-200 font-semibold text-sm flex items-center gap-2";
 
   return (
     <header className="bg-gradient-to-r from-blue-200 via-blue-100 to-white backdrop-blur-md text-blue-900 px-4 sm:px-8 py-3.5 sticky top-0 z-40 shadow-sm border-b border-blue-200/80">
@@ -44,19 +44,19 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-2">
           <Link to="/" className={getNavClass("/")}>
-            <i className="ri-home-4-line text-base"></i>
+            <i className="fa-solid fa-house text-sm"></i>
             <span>Home</span>
           </Link>
 
           {auth && (
             <Link to="/Notes" className={getNavClass("/Notes")}>
-              <i className="ri-add-circle-line text-base"></i>
+              <i className="fa-solid fa-circle-plus text-sm"></i>
               <span>Create Blog</span>
             </Link>
           )}
 
           <Link to="/about" className={getNavClass("/about")}>
-            <i className="ri-information-line text-base"></i>
+            <i className="fa-solid fa-circle-info text-sm"></i>
             <span>About</span>
           </Link>
 
@@ -82,10 +82,10 @@ const Navbar = () => {
         <button
           type="button"
           aria-label="Toggle navigation"
-          className="md:hidden text-2xl p-1.5 rounded-xl text-blue-800 hover:bg-blue-100 transition focus:outline-none cursor-pointer"
+          className="md:hidden text-xl p-2 rounded-xl text-blue-800 hover:bg-blue-100 transition focus:outline-none cursor-pointer"
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          <i className={menuOpen ? "ri-close-line" : "ri-menu-3-line"}></i>
+          <i className={menuOpen ? "fa-solid fa-xmark text-2xl" : "fa-solid fa-bars text-xl"}></i>
         </button>
       </div>
 
@@ -97,7 +97,7 @@ const Navbar = () => {
             className={getNavClass("/")}
             onClick={() => setMenuOpen(false)}
           >
-            <i className="ri-home-4-line text-base"></i>
+            <i className="fa-solid fa-house text-sm"></i>
             <span>Home</span>
           </Link>
 
@@ -107,7 +107,7 @@ const Navbar = () => {
               className={getNavClass("/Notes")}
               onClick={() => setMenuOpen(false)}
             >
-              <i className="ri-add-circle-line text-base"></i>
+              <i className="fa-solid fa-circle-plus text-sm"></i>
               <span>Create Blog</span>
             </Link>
           )}
@@ -117,7 +117,7 @@ const Navbar = () => {
             className={getNavClass("/about")}
             onClick={() => setMenuOpen(false)}
           >
-            <i className="ri-information-line text-base"></i>
+            <i className="fa-solid fa-circle-info text-sm"></i>
             <span>About</span>
           </Link>
 

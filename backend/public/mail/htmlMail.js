@@ -1,6 +1,6 @@
 const mailHtmlRes = (name, username) => {
   return `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-    <h2 style="text-align: center; color: #1e40af;">Welcome to <span style="color: #2563eb;">Noticia</span> 📰</h2>
+    <h2 style="text-align: center; color: #1e40af;">Welcome to <span style="color: #2563eb;">Noticia</span></h2>
     <p>Hi <strong>${name}</strong>,</p>
 
     <p>Thanks for registering with <strong>Noticia</strong> — your personal workspace for notes, ideas, and productivity.</p>
@@ -14,7 +14,7 @@ const mailHtmlRes = (name, username) => {
 
     <p>Need help? Feel free to reach out to our team.</p>
 
-    <p style="margin-top: 30px; color: #475569;">Best regards,<br><strong>The Noticia Team 🚀</strong></p>
+    <p style="margin-top: 30px; color: #475569;">Best regards,<br><strong>The Noticia Team</strong></p>
   </div>`;
 };
 

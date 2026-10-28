@@ -52,10 +52,10 @@ const PopCard = () => {
         <button
           type="button"
           aria-label="Close note preview"
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors p-2 text-2xl cursor-pointer"
+          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors p-2 text-xl cursor-pointer"
           onClick={handleClose}
         >
-          <i className="ri-close-line"></i>
+          <i className="fa-solid fa-xmark"></i>
         </button>
 
         {/* Author info header */}

@@ -117,7 +117,7 @@ const Notes = () => {
                 : "text-blue-900 hover:bg-blue-200/60"
             }`}
           >
-            <i className="ri-earth-line text-base"></i>
+            <i className="fa-solid fa-globe text-sm"></i>
             <span>Community Blogs</span>
           </button>
 
@@ -130,7 +130,7 @@ const Notes = () => {
                 : "text-blue-900 hover:bg-blue-200/60"
             }`}
           >
-            <i className="ri-user-line text-base"></i>
+            <i className="fa-solid fa-user text-sm"></i>
             <span>My Blogs</span>
           </button>
         </div>
@@ -139,7 +139,7 @@ const Notes = () => {
           to="/Notes"
           className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow hover:shadow-md transition duration-200 flex items-center gap-2"
         >
-          <i className="ri-add-line text-base"></i>
+          <i className="fa-solid fa-plus text-xs"></i>
           Write New Blog
         </Link>
       </div>
@@ -151,11 +151,13 @@ const Notes = () => {
         </div>
       ) : notes.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl shadow-sm border border-blue-100 max-w-lg mx-auto p-8">
-          <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-            <i className="ri-article-line"></i>
+          <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+            <i className="fa-solid fa-newspaper"></i>
           </div>
           <h3 className="text-xl font-bold text-blue-900 mb-2">
-            {feedFilter === "my" ? "You haven't written any blogs yet" : "No community blogs found"}
+            {feedFilter === "my"
+              ? "You have not written any blogs yet"
+              : "No community blogs found"}
           </h3>
           <p className="text-gray-600 text-sm mb-6 leading-relaxed">
             {feedFilter === "my"
@@ -166,7 +168,7 @@ const Notes = () => {
             to="/Notes"
             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow hover:shadow-md transition duration-200 text-sm"
           >
-            <i className="ri-edit-line"></i>
+            <i className="fa-solid fa-pen-to-square text-sm"></i>
             Create Blog Now
           </Link>
         </div>
@@ -185,7 +187,7 @@ const Notes = () => {
           endMessage={
             displayNotes.length > 0 && (
               <p className="text-center text-gray-400 mt-10 text-sm font-medium">
-                — End of blogs list —
+                All blogs loaded
               </p>
             )
           }
@@ -259,10 +261,11 @@ const Notes = () => {
                   <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
                     <button
                       type="button"
-                      className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition flex items-center gap-1.5 cursor-pointer"
                       onClick={() => setSelectedNote({ ...note, editing: false })}
                     >
-                      Read blog <i className="ri-arrow-right-s-line text-sm"></i>
+                      <span>Read blog</span>
+                      <i className="fa-solid fa-chevron-right text-[10px]"></i>
                     </button>
 
                     {isMine && (
@@ -271,26 +274,26 @@ const Notes = () => {
                           type="button"
                           aria-label="Edit blog"
                           title="Edit your blog"
-                          className="text-blue-600 hover:text-blue-900 hover:bg-blue-100 p-1.5 rounded-lg transition text-base cursor-pointer"
+                          className="text-blue-600 hover:text-blue-900 hover:bg-blue-100 p-1.5 rounded-lg transition text-sm cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedNote({ ...note, editing: true });
                           }}
                         >
-                          <i className="ri-edit-2-line"></i>
+                          <i className="fa-solid fa-pen"></i>
                         </button>
 
                         <button
                           type="button"
                           aria-label="Delete blog"
                           title="Delete blog"
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition text-base cursor-pointer"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition text-sm cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             setNoteToDelete(note);
                           }}
                         >
-                          <i className="ri-delete-bin-5-line"></i>
+                          <i className="fa-solid fa-trash-can"></i>
                         </button>
                       </div>
                     )}
@@ -322,14 +325,14 @@ const Notes = () => {
               type="button"
               aria-label="Cancel delete"
               disabled={deleting}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition p-1 text-xl"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition p-1 text-lg cursor-pointer"
               onClick={() => setNoteToDelete(null)}
             >
-              <i className="ri-close-line"></i>
+              <i className="fa-solid fa-xmark"></i>
             </button>
 
             <div className="mx-auto w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-4">
-              <i className="ri-delete-bin-line text-3xl text-red-600"></i>
+              <i className="fa-solid fa-trash-can text-2xl text-red-600"></i>
             </div>
 
             <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Blog?</h3>
@@ -355,7 +358,7 @@ const Notes = () => {
               >
                 {deleting ? (
                   <>
-                    <i className="ri-loader-4-line animate-spin text-base"></i>
+                    <i className="fa-solid fa-circle-notch animate-spin text-sm"></i>
                     <span>Deleting...</span>
                   </>
                 ) : (

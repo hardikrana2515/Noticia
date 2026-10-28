@@ -67,10 +67,10 @@ const EditNotes = () => {
         <button
           type="button"
           aria-label="Close edit modal"
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors p-2 text-2xl"
+          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors p-2 text-xl cursor-pointer"
           onClick={handleClose}
         >
-          <i className="ri-close-line"></i>
+          <i className="fa-solid fa-xmark"></i>
         </button>
 
         <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-800 mb-6 tracking-wide">
@@ -138,14 +138,14 @@ const EditNotes = () => {
             <button
               type="button"
               onClick={handleClose}
-              className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition"
+              className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold rounded-xl shadow hover:shadow-lg transition flex items-center gap-2"
+              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold rounded-xl shadow hover:shadow-lg transition flex items-center gap-2 cursor-pointer"
             >
               {saving ? "Saving..." : "Save Changes"}
             </button>

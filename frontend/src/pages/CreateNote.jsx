@@ -37,7 +37,7 @@ const CreateNote = () => {
     setSubmitting(false);
 
     if (res?.success) {
-      showAlert("Your note was created successfully!", "Success", false);
+      showAlert("Your blog was published successfully!", "Success", false);
       setNote({ title: "", discription: "", tag: "General" });
       setTimeout(() => {
         navigate("/");
@@ -56,7 +56,7 @@ const CreateNote = () => {
   return (
     <div className="flex flex-col items-center justify-start bg-gradient-to-b from-blue-50 to-white min-h-[85vh] py-10 px-4">
       <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-8 tracking-wide">
-        Create a New Note
+        Create a New Blog
       </h1>
 
       <form
@@ -112,13 +112,23 @@ const CreateNote = () => {
         <button
           type="submit"
           disabled={isInvalid || submitting}
-          className={`w-full font-bold py-3 rounded-xl shadow transition duration-200 text-base ${
+          className={`w-full font-bold py-3 rounded-xl shadow transition duration-200 text-base flex items-center justify-center gap-2 cursor-pointer ${
             isInvalid || submitting
               ? "bg-blue-300 cursor-not-allowed text-white"
               : "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
           }`}
         >
-          {submitting ? "Creating Note..." : "Create Note"}
+          {submitting ? (
+            <>
+              <i className="fa-solid fa-circle-notch animate-spin text-sm"></i>
+              <span>Publishing Blog...</span>
+            </>
+          ) : (
+            <>
+              <i className="fa-solid fa-feather text-sm"></i>
+              <span>Publish Blog</span>
+            </>
+          )}
         </button>
       </form>
 

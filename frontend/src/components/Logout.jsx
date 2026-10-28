@@ -23,7 +23,7 @@ const Logout = () => {
           className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2 text-sm sm:text-base cursor-pointer"
           onClick={() => setShowModal(true)}
         >
-          <i className="ri-logout-box-r-line text-lg"></i>
+          <i className="fa-solid fa-right-from-bracket text-base"></i>
           Log Out
         </button>
       </div>
@@ -41,15 +41,15 @@ const Logout = () => {
               type="button"
               aria-label="Close modal"
               disabled={loggingOut}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors text-xl p-1"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors text-lg p-1 cursor-pointer"
               onClick={() => setShowModal(false)}
             >
-              <i className="ri-close-line"></i>
+              <i className="fa-solid fa-xmark"></i>
             </button>
 
             {/* Icon */}
             <div className="mx-auto w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-4">
-              <i className="ri-logout-circle-line text-3xl text-red-600"></i>
+              <i className="fa-solid fa-arrow-right-from-bracket text-2xl text-red-600"></i>
             </div>
 
             <h3 className="text-xl font-extrabold text-blue-900 mb-2">
@@ -72,11 +72,11 @@ const Logout = () => {
                 type="button"
                 disabled={loggingOut}
                 onClick={handleConfirmLogout}
-                className="w-1/2 px-4 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-bold rounded-xl shadow hover:shadow-md transition text-sm flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-1/2 px-4 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-bold rounded-xl shadow hover:shadow-md transition text-sm flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loggingOut ? (
                   <>
-                    <i className="ri-loader-4-line animate-spin text-base"></i>
+                    <i className="fa-solid fa-circle-notch animate-spin text-sm"></i>
                     <span>Exiting...</span>
                   </>
                 ) : (

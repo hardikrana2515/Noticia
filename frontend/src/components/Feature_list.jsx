@@ -30,27 +30,32 @@ const Feature_list = () => {
   const features = [
     {
       index: 0,
-      title: "🧠 Smart Cloud Storage",
+      icon: "fa-solid fa-cloud",
+      title: "Smart Cloud Storage",
       description: "Securely save and retrieve your blogs and notes from any modern device, anywhere.",
     },
     {
       index: 1,
-      title: "🎯 Focused, Clean UI",
+      icon: "fa-solid fa-bullseye",
+      title: "Focused, Clean UI",
       description: "A minimal, elegant aesthetic designed to keep your thoughts clear and centered.",
     },
     {
       index: 2,
-      title: "🔐 Author-Controlled Privacy",
+      icon: "fa-solid fa-lock",
+      title: "Author-Controlled Privacy",
       description: "Strict ownership checks ensure only you can edit or remove your published articles.",
     },
     {
       index: 3,
-      title: "🌐 Community Public Feed",
+      icon: "fa-solid fa-globe",
+      title: "Community Public Feed",
       description: "Explore diverse perspectives and tutorials shared by fellow thinkers on Noticia.",
     },
     {
       index: 4,
-      title: "📩 Instant Notifications",
+      icon: "fa-solid fa-bell",
+      title: "Instant Notifications",
       description: "Automated welcome alerts to confirm your account setup and security.",
     },
   ];
@@ -65,10 +70,13 @@ const Feature_list = () => {
         <Slider {...settings}>
           {features.map((item) => (
             <div key={item.index} className="px-3 py-2">
-              <div className="bg-gradient-to-br from-blue-100/90 via-blue-50/50 to-white hover:shadow-xl transition-all duration-300 shadow-sm border border-blue-200/70 rounded-3xl p-6 h-48 flex flex-col justify-between">
+              <div className="bg-gradient-to-br from-blue-100/90 via-blue-50/50 to-white hover:shadow-xl transition-all duration-300 shadow-sm border border-blue-200/70 rounded-3xl p-6 h-52 flex flex-col justify-between">
                 <div>
+                  <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-base mb-3 shadow-sm">
+                    <i className={item.icon}></i>
+                  </div>
                   <h4 className="text-lg font-bold text-blue-900">{item.title}</h4>
-                  <p className="text-gray-600 text-sm mt-2.5 leading-relaxed">
+                  <p className="text-gray-600 text-sm mt-2 leading-relaxed">
                     {item.description}
                   </p>
                 </div>
