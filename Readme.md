@@ -1,17 +1,18 @@
-# Noticia
+# iNotebook
 
-A full-stack MERN (MongoDB, Express, React, Node.js) application for managing personal notes with user authentication, profile management, and image upload.
+A full-stack MERN (MongoDB, Express, React, Node.js) web application for capturing, organizing, and managing personal notes with JWT session authentication, profile management, and image upload.
 
 ---
 
 ## Features
 
-- User authentication (signup, login, logout)
-- JWT-based session management
-- Profile page with image upload
-- Create, read, update, and delete notes
-- Responsive UI with Tailwind CSS
-- Protected routes for authenticated users
+- **User Authentication:** Secure JWT-based signup, login, and logout.
+- **Note Management:** Full CRUD (Create, Read, Update, Delete) for personal notes.
+- **Profile Customization:** Profile view with avatar image upload.
+- **Cloud Database:** MongoDB Atlas / Local MongoDB with Mongoose ODM.
+- **Responsive UI:** Modern, clean styling with Tailwind CSS and RemixIcon.
+- **Infinite Scrolling:** Smooth infinite scroll pagination for browsing notes.
+- **Protected Routing:** Secure routes accessible only by authenticated users.
 
 ---
 
@@ -21,23 +22,25 @@ A full-stack MERN (MongoDB, Express, React, Node.js) application for managing pe
 iNotebook/
 │
 ├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── uploads/
+│   ├── Controller/        # User and Note controllers
+│   ├── Database/          # MongoDB connection
+│   ├── middleware/        # JWT Auth and Multer upload middlewares
+│   ├── models/            # Mongoose schemas (User, Note)
+│   ├── public/Img/        # Uploaded profile images
+│   ├── Routes/            # API routes (user, notes)
+│   ├── Utils/             # ApiError, ApiResponse, asyncHandler, Mail
 │   ├── .env
 │   └── server.js
 │
 └── frontend/
-    ├── public/
+    ├── public/            # Static assets and icons
     ├── src/
-    │   ├── components/
-    │   ├── context/
-    │   ├── pages/
-    │   ├── Routes/
+    │   ├── components/    # Reusable UI components
+    │   ├── context/       # React Contexts (UserContext, NotesContext)
+    │   ├── pages/         # Page views (Home, About, Account, CreateNote, Privacy)
+    │   ├── Routes/        # ProtectedRoute wrapper
+    │   ├── Api.axios.js   # Centralized Axios client with Bearer interceptor
     │   ├── App.jsx
-    │   ├── Api.axios.js
     │   └── main.jsx
     ├── .env
     └── vite.config.js
@@ -50,7 +53,7 @@ iNotebook/
 ### Prerequisites
 
 - Node.js (v18+ recommended)
-- MongoDB (local or Atlas)
+- MongoDB (Local instance or MongoDB Atlas connection string)
 
 ---
 
@@ -70,19 +73,26 @@ cd backend
 npm install
 ```
 
-#### Create a `.env` file in `/backend`:
+#### Configure `.env` in `/backend`:
 
-```
+```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLIENT_URL=http://localhost:5173
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRY=7d
+Frontend_URL=http://localhost:5173
+My_Mail=your_email@gmail.com
+Paaskey=your_gmail_app_password
 ```
 
 #### Start the backend server:
 
 ```bash
+# Development mode (with nodemon):
 npm run dev
+
+# Or production mode:
+npm start
 ```
 
 ---
@@ -94,13 +104,13 @@ cd ../frontend
 npm install
 ```
 
-#### Create a `.env` file in `/frontend`:
+#### Configure `.env` in `/frontend`:
 
-```
-VITE_API_URL=http://localhost:5000/api/
+```env
+VITE_API_URL=http://localhost:5000/iNotebook
 ```
 
-#### Start the frontend dev server:
+#### Start the frontend development server:
 
 ```bash
 npm run dev
@@ -108,41 +118,30 @@ npm run dev
 
 ---
 
-## Usage
+### 4. Build for Production
 
-- Visit [http://localhost:5173](http://localhost:5173)
-- Register a new account or log in.
-- Create, edit, and delete notes.
-- Update your profile and upload a profile picture.
-
----
-
-## Tech Stack
-
-- **Frontend:** React, Vite, Axios, Tailwind CSS
-- **Backend:** Node.js, Express, MongoDB, Mongoose, JWT, Multer (for image upload)
-- **Authentication:** JWT (stored in cookies or sent via Authorization header)
+```bash
+# Frontend production build:
+cd frontend
+npm run build
+```
 
 ---
 
-## Important Notes
+## API Endpoints
 
-- Make sure both frontend and backend servers are running.
-- The backend must allow CORS from the frontend URL.
-- Profile image uploads are stored in `/backend/uploads` (or as configured).
-- All API endpoints are under `/api/` (as set in `VITE_API_URL`).
+### User Routes (`/iNotebook/user`)
+- `POST /register` — Register a new account
+- `POST /login` — Log in and receive JWT cookie & token
+- `POST /logout` — Invalidate session and clear auth cookie
+- `GET /getuser` — Fetch current user details (Protected)
+- `POST /uploadImage` — Upload avatar image (Protected, `multipart/form-data`)
 
----
-
-## Scripts
-
-### Backend
-
-- `npm run dev` — Start backend in development mode
-
-### Frontend
-
-- `npm run dev` — Start frontend dev server
+### Notes Routes (`/iNotebook/Notes`)
+- `GET /notes` — Fetch all notes for authenticated user (Protected)
+- `POST /create` — Create a new note (Protected)
+- `PUT /updateNote/:id` — Update existing note by ID (Protected)
+- `DELETE /deletenote/:id` — Delete note by ID (Protected)
 
 ---
 

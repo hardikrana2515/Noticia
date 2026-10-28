@@ -1,20 +1,37 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { ApiError } from "../Utils/Apierror.js";
 import { asyncHandler } from "../Utils/asynchandler.js";
 import User from "../models/user.moodel.js";
 import { ApiResponse } from "../Utils/Apiresponse.js";
-import Mail from "../Utils/sendMail.js"
-import mailHtmlRes from "../public/mail/htmlMail.js"
+import Mail from "../Utils/sendMail.js";
+import mailHtmlRes from "../public/mail/htmlMail.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const UserRegister = asyncHandler(async (req, res) => {
   const { name, username, email, password, phone } = req.body;
   if (!name || !username || !email || !password || !phone) {
-    res.status(400);
-    throw new ApiError(400, "Please fill all the fields");
+    throw new ApiError(400, "Please fill all required fields");
   }
-  const registeredUser = await User.findOne({ email, phone });
 
-  if (registeredUser) {
-    res.status(400);
+  // Check if user already exists with any unique field
+  const existingUser = await User.findOne({
+    $or: [{ email }, { phone }, { username }],
+  });
+
+  if (existingUser) {
+    if (existingUser.email === email) {
+      throw new ApiError(400, "An account with this email already exists");
+    }
+    if (existingUser.username === username) {
+      throw new ApiError(400, "This username is already taken");
+    }
+    if (existingUser.phone === phone) {
+      throw new ApiError(400, "This phone number is already registered");
+    }
     throw new ApiError(400, "User already registered");
   }
 
@@ -26,93 +43,77 @@ const UserRegister = asyncHandler(async (req, res) => {
     phone,
     password: hashPassword,
   });
-     let html = mailHtmlRes(name,username,password)
-    let msg = `Hi ${name},\nThank you for using our services.👍\n\n
-                your Usernamr 👤: ${username} \n
-                     password 🔑: ${password} \n
-                     
-                     We hope our services helpful for you.🫂`
 
-  Mail(email,"Wlcome To Noticia",msg,html)
+  // Safe user without password
+  const safeUser = await User.findById(user._id).select("-password");
+
+  // Send welcome email asynchronously (never include plaintext passwords)
+  const html = mailHtmlRes(name, username);
+  const msg = `Hi ${name},\n\nWelcome to Noticia! Your account (${username}) has been created successfully.\n\nBest regards,\nThe Noticia Team`;
+  Mail(email, "Welcome to Noticia", msg, html).catch((err) =>
+    console.error("Email dispatch failed:", err.message)
+  );
 
   return res
     .status(201)
-    .json(new ApiResponse(201, user, "User registered successfully"));
+    .json(new ApiResponse(201, safeUser, "User registered successfully"));
 });
 
 const UserLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(400);
-    throw new ApiError(400, "Please fill all the fields");
+    throw new ApiError(400, "Please provide both email and password");
   }
 
-  const userExist = await User.findOne({email});
-
-  if (!userExist) {
-    res.status(400);
-    throw new ApiError(400, "User not found, please register");
-  }
-
-  const existingToken = req.cookies?.token;
-  if (existingToken) {
-    try {
-      return res.status(204)
-                .json(new ApiResponse(204,existingToken,"User already logged in."))
-    } catch (err) {
-      console.error(`Token verification error`);
-       throw new ApiError(500,"Internal server error")
-    }
-  }
-
-  const user = await User.findOne({email}).select("+password");
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    res.status(400);
-    throw new ApiError(400, "User not found, please register");
+    throw new ApiError(400, "Invalid email or password");
   }
 
-  // console.log(user.password);
   const isCorrect = await user.comparePassword(password);
   if (!isCorrect) {
-    res.status(400);
-    throw new ApiError(400, "Incorrect password");
+    throw new ApiError(400, "Invalid email or password");
   }
 
-  const token = user.ganerateAuthToken();
-  res.cookie("token", token, { httpOnly: true });
+  const token = user.generateAuthToken();
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: "/",
+  });
+
+  const safeUser = await User.findById(user._id).select("-password");
+
   return res
     .status(200)
-    .json(new ApiResponse(200, { user, token }, "User logged in successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        { user: safeUser, token },
+        "User logged in successfully"
+      )
+    );
 });
 
 const getUser = asyncHandler(async (req, res) => {
   const user = req.user;
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "User Fetched Succesfully"));
+    .json(new ApiResponse(200, user, "User fetched successfully"));
 });
 
 const UserLogout = asyncHandler(async (req, res) => {
-  const authHeader = req.header("authorization");
-  const tokenFromHeader = authHeader?.startsWith("Bearer ")
-    ? authHeader.split(" ")[1]
-    : null;
-
-     const token = req.cookies?.token || tokenFromHeader;
-
-  if (!token) {
-    return res
-      .status(401)
-      .json(new ApiResponse(401, null, "User not logged in"));
-  }
-
-  res.cookie("token", null, {
+  res.cookie("token", "", {
     httpOnly: true,
     expires: new Date(0),
     sameSite: "lax",
-    path: "/", 
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
   });
 
   return res
@@ -122,23 +123,42 @@ const UserLogout = asyncHandler(async (req, res) => {
 
 const UploadImage = asyncHandler(async (req, res) => {
   if (!req.file) {
-    throw new ApiError(401, "Please first select file!");
+    throw new ApiError(400, "Please select an image file to upload");
   }
-  // console.log(req.body)
-  // console.log("Uploaded file:", req.file);
 
   const imageUrl = `/Img/${req.file.filename}`;
 
-  const user = await User.findByIdAndUpdate(
+  // Find current user to check for previous image cleanup
+  const existingUser = await User.findById(req.user._id);
+  if (existingUser?.image && existingUser.image.startsWith("/Img/")) {
+    const oldFileName = existingUser.image.replace("/Img/", "");
+    const oldFilePath = path.join(__dirname, "../public/Img", oldFileName);
+    if (fs.existsSync(oldFilePath)) {
+      fs.unlink(oldFilePath, (err) => {
+        if (err) console.error("Error cleaning up old profile picture:", err);
+      });
+    }
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
     req.user._id,
-    {image : imageUrl },
-    {new : true }
-  )
-    if (!user) {
+    { image: imageUrl },
+    { new: true }
+  ).select("-password");
+
+  if (!updatedUser) {
     throw new ApiError(404, "User not found");
   }
+
   return res
     .status(200)
-    .json(new ApiResponse(200, { imageUrl,user }, "Image uploaded successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        { imageUrl, user: updatedUser },
+        "Profile picture updated successfully"
+      )
+    );
 });
-export { UserRegister, UserLogin, UserLogout, getUser ,UploadImage};
+
+export { UserRegister, UserLogin, UserLogout, getUser, UploadImage };

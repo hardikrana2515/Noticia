@@ -7,24 +7,29 @@ const userschema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      trim: true,
     },
     username: {
       type: String,
       required: true,
+      unique: true,
       lowercase: true,
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
-      match: [/\S+@\S+\.\S+/, "is invalid"],
+      trim: true,
+      match: [/\S+@\S+\.\S+/, "Email is invalid"],
     },
     phone: {
       type: String,
       required: true,
       unique: true,
-      match: [/\d{10}/, "is invalid"],
+      trim: true,
+      match: [/^\d{10}$/, "Phone number must be exactly 10 digits"],
     },
     password: {
       type: String,
@@ -32,29 +37,32 @@ const userschema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
-    image:{
+    image: {
       type: String,
-    }
+      default: "",
+    },
   },
   {
     timestamps: true,
   }
 );
 
-userschema.methods.ganerateAuthToken = function () {
+userschema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRY,
+    expiresIn: process.env.JWT_EXPIRY || "7d",
   });
   return token;
 };
+
+// Backward-compatibility alias for typo
+userschema.methods.ganerateAuthToken = userschema.methods.generateAuthToken;
 
 userschema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
 userschema.statics.hashPassword = async (password) => {
-  const hashPassword = await bcrypt.hash(password, 12);
-  return hashPassword;
+  return await bcrypt.hash(password, 12);
 };
 
 const User = mongoose.model("User", userschema);

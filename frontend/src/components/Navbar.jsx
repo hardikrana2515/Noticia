@@ -1,81 +1,140 @@
-import React, { useEffect , useContext , useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import userContext from '../context/UserContext/userContext';
+import React, { useContext, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import userContext from "../context/UserContext/userContext";
 
 const Navbar = () => {
   const location = useLocation();
-  const {GetUser,img,setImg} = useContext(userContext);
+  const { auth, img, user } = useContext(userContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-   
-    const fetchImageOnce = async () => {
-      if (!img) {
-        const userData = await GetUser();
-        if (userData?.data) {
-          setImg(userData.data.image);
-        }
-      }
-      
-    };
-    fetchImageOnce();
-  }, []);
+  const serverBaseUrl = (
+    import.meta.env.VITE_API_URL || "http://localhost:5000/iNotebook"
+  ).replace(/\/iNotebook\/?$/, "");
+
+  const avatarSrc = img
+    ? img.startsWith("http")
+      ? img
+      : `${serverBaseUrl}${img}`
+    : "/default-user.png";
 
   const getNavClass = (path) =>
     location.pathname === path
-      ? 'px-3 py-2 rounded-md bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition duration-300'
-      : 'px-3 py-2 rounded-md text-blue-900 hover:bg-blue-300 transition duration-300';
+      ? "px-4 py-2 rounded-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition duration-200 font-semibold text-sm flex items-center gap-1.5"
+      : "px-4 py-2 rounded-xl text-blue-900 hover:bg-blue-100 transition duration-200 font-semibold text-sm flex items-center gap-1.5";
 
   return (
-    <header className="bg-gradient-to-br from-blue-300 to-white backdrop-blur-md text-blue-800 px-4 py-4 sticky top-0 z-50 shadow-md border-b border-blue-100">
+    <header className="bg-gradient-to-r from-blue-200 via-blue-100 to-white backdrop-blur-md text-blue-900 px-4 sm:px-8 py-3.5 sticky top-0 z-40 shadow-sm border-b border-blue-200/80">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        
-        {/* Left Logo */}
-        <Link to="/" className="flex items-center space-x-2">
-          <img src="/logo1.png" alt="Notica" className="h-12 w-12 object-cover rounded-full shadow" />
-          <span className="font-bold text-xl tracking-wide">Notica</span>
+        {/* Brand Logo & Name */}
+        <Link to="/" className="flex items-center space-x-2.5 group">
+          <div className="relative">
+            <img
+              src="/logo1.png"
+              alt="Noticia"
+              className="h-10 w-10 sm:h-11 sm:w-11 object-cover rounded-full shadow-md border-2 border-white group-hover:scale-105 transition-transform duration-200"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-extrabold text-xl sm:text-2xl tracking-tight text-blue-900 group-hover:text-blue-700 transition-colors">
+              Noticia
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/" className={getNavClass('/')}>Home</Link>
-          <Link to="/Notes" className={getNavClass('/Notes')}>Create</Link>
-          <Link to="/About" className={getNavClass('/About')}>About</Link>
-          <Link to="/Account">
-            <img
-              src={img ? `http://localhost:5000${img}` : "/user.png"}
-              alt="User"
-              className="h-8 w-8 rounded-full object-cover shadow"
-            />
+        <nav className="hidden md:flex items-center space-x-2">
+          <Link to="/" className={getNavClass("/")}>
+            <i className="ri-home-4-line text-base"></i>
+            <span>Home</span>
           </Link>
+
+          {auth && (
+            <Link to="/Notes" className={getNavClass("/Notes")}>
+              <i className="ri-add-circle-line text-base"></i>
+              <span>Create Blog</span>
+            </Link>
+          )}
+
+          <Link to="/about" className={getNavClass("/about")}>
+            <i className="ri-information-line text-base"></i>
+            <span>About</span>
+          </Link>
+
+          {auth && (
+            <Link
+              to="/Account"
+              className="ml-3 pl-3 border-l border-blue-200 flex items-center space-x-2.5 group py-1"
+              title="My Account"
+            >
+              <img
+                src={avatarSrc}
+                alt="Profile"
+                className="h-9 w-9 rounded-full object-cover border-2 border-blue-500 shadow-sm group-hover:ring-2 group-hover:ring-blue-400 transition-all duration-200"
+              />
+              <span className="text-xs font-bold text-blue-900 group-hover:text-blue-700 transition-colors max-w-[100px] truncate">
+                {user?.name || "Account"}
+              </span>
+            </Link>
+          )}
         </nav>
 
-        {/* Hamburger Icon */}
+        {/* Mobile Hamburger Toggle */}
         <button
-          className="md:hidden text-3xl focus:outline-none text-blue-800"
+          type="button"
+          aria-label="Toggle navigation"
+          className="md:hidden text-2xl p-1.5 rounded-xl text-blue-800 hover:bg-blue-100 transition focus:outline-none cursor-pointer"
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          <i className={menuOpen ? "ri-close-line" : "ri-menu-line"}></i>
+          <i className={menuOpen ? "ri-close-line" : "ri-menu-3-line"}></i>
         </button>
       </div>
 
-      {/* Mobile Dropdown */}
+      {/* Mobile Drawer Menu */}
       {menuOpen && (
-        <div className="md:hidden mt-4 px-4 space-y-4 flex flex-col bg-white rounded-lg shadow-lg border border-blue-200">
-          <div className="flex items-center justify-baseline">
-          <Link to="/" className={getNavClass('/')} onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link to="/Notes" className={getNavClass('/Notes')} onClick={() => setMenuOpen(false)}>Create</Link>
-          <Link to="/About" className={getNavClass('/About')} onClick={() => setMenuOpen(false)}>About</Link>
-          <Link to="/Account" onClick={() => setMenuOpen(false)}>
-            <div className="flex items-center space-x-2">
-              <img
-                src={img ? `http://localhost:5000${img}` : "/user.png"}
-                alt="User"
-                className="h-8 w-8 rounded-full object-cover shadow"
-              />
-            </div>
+        <div className="md:hidden mt-3 pt-3 border-t border-blue-200/80 flex flex-col space-y-1.5 animate-fadeIn">
+          <Link
+            to="/"
+            className={getNavClass("/")}
+            onClick={() => setMenuOpen(false)}
+          >
+            <i className="ri-home-4-line text-base"></i>
+            <span>Home</span>
           </Link>
-          </div>
+
+          {auth && (
+            <Link
+              to="/Notes"
+              className={getNavClass("/Notes")}
+              onClick={() => setMenuOpen(false)}
+            >
+              <i className="ri-add-circle-line text-base"></i>
+              <span>Create Blog</span>
+            </Link>
+          )}
+
+          <Link
+            to="/about"
+            className={getNavClass("/about")}
+            onClick={() => setMenuOpen(false)}
+          >
+            <i className="ri-information-line text-base"></i>
+            <span>About</span>
+          </Link>
+
+          {auth && (
+            <Link
+              to="/Account"
+              className="flex items-center space-x-3 px-4 py-2 text-blue-900 hover:bg-blue-100 rounded-xl transition font-semibold text-sm"
+              onClick={() => setMenuOpen(false)}
+            >
+              <img
+                src={avatarSrc}
+                alt="Profile"
+                className="h-8 w-8 rounded-full object-cover border border-blue-400"
+              />
+              <span>My Account ({user?.name || "Profile"})</span>
+            </Link>
+          )}
         </div>
       )}
     </header>

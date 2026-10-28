@@ -1,180 +1,208 @@
-import React,{useState} from 'react'
-import { useContext } from 'react';
-import userContext from '../context/UserContext/userContext.js'
-
+import React, { useState, useContext } from "react";
+import userContext from "../context/UserContext/userContext.js";
 
 const SignUp = () => {
- 
-  const {signup,loginMode,setLoginMode} = useContext(userContext);
-  const [credentials,setCredentials ] = useState({
-    email: '',
-    phone: '',
-    name: '',
-    username: '',
-    password: '',
-    cpassword: ''
+  const { signup, setLoginMode } = useContext(userContext);
+  const [credentials, setCredentials] = useState({
+    email: "",
+    phone: "",
+    name: "",
+    username: "",
+    password: "",
+    cpassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleChange=(e)=>{
-    setCredentials({...credentials,[e.target.id]: e.target.value});
-  }
+  const handleChange = (e) => {
+    setCredentials({ ...credentials, [e.target.id]: e.target.value });
+    if (error) setError("");
+  };
 
-  const handleSubmit = (e) => {
-      e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMsg("");
 
-      if (credentials.password !== credentials.cpassword) {
+    if (credentials.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    if (credentials.password !== credentials.cpassword) {
       setError("Passwords do not match");
       return;
     }
 
-      signup(
-        credentials.email,
-        credentials.phone,
-        credentials.name,
-        credentials.username,
-        credentials.password
-      );
-     
-      setCredentials({
-        email: '',
-        phone: '',
-        name: '',
-        username: '',
-        password: '',
-        cpassword: ''
-      });
-      
-      setError('');
+    setSubmitting(true);
+    const res = await signup(
+      credentials.email,
+      credentials.phone,
+      credentials.name,
+      credentials.username,
+      credentials.password
+    );
+    setSubmitting(false);
 
-  }
-     
+    if (res?.success) {
+      setSuccessMsg("Account created successfully! Redirecting to login...");
+      setTimeout(() => {
+        setLoginMode(true);
+      }, 1500);
+    } else {
+      setError(res?.message || "Registration failed. Please check your details.");
+    }
+  };
 
   return (
-    
-     <div className='flex flex-col justify-center items-center '>
-      <div className="fixed inset-0 border border-blue-300 rounded-3xl bg-transparent bg-opacity-30 backdrop-blur-xs flex flex-col items-center justify-center z-50 ">
-        <img src="/user.png" alt="User" className='p-2 m-3 rounded-full h-30 w-auto' />
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-2xl bg-white p-8 shadow-2xl transition-all duration-300 hover:shadow-blue-300 relative"
-        >
-          <div className="mb-6">
-            <label htmlFor="email" className="block text-blue-800 font-semibold mb-2 tracking-wide">
+    <div className="flex flex-col justify-center items-center py-10 px-4 min-h-[75vh]">
+      <div className="w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-blue-200">
+        <div className="flex flex-col items-center mb-6">
+          <img
+            src="/user.png"
+            alt="Sign Up"
+            className="h-16 w-16 rounded-full mb-2 object-cover shadow"
+          />
+          <h2 className="text-2xl font-extrabold text-blue-900">Create an Account</h2>
+          <p className="text-sm text-gray-500">Join Noticia to start taking notes</p>
+        </div>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm font-medium text-center">
+            {error}
+          </div>
+        )}
+
+        {successMsg && (
+          <div className="mb-4 p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium text-center">
+            {successMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-blue-900 font-semibold mb-1 text-sm">
               Email
             </label>
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="you@example.com"
               id="email"
               value={credentials.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm"
+              className="w-full px-4 py-2 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm"
             />
           </div>
-        <div className="mb-6">
-            <label htmlFor="phone" className="block text-blue-800 font-semibold mb-2 tracking-wide">
-              Phone-nummber
+
+          <div>
+            <label htmlFor="phone" className="block text-blue-900 font-semibold mb-1 text-sm">
+              Phone Number (10 digits)
             </label>
             <input
-              type="text"
-              placeholder="Enter your Phone-nummber"
+              type="tel"
+              placeholder="10-digit mobile number"
               id="phone"
               value={credentials.phone}
               minLength={10}
               maxLength={10}
-              pattern='[0-9]{10}'
-              title='Please enter a valid 10-digit phone number'
+              pattern="[0-9]{10}"
+              title="Please enter a valid 10-digit phone number"
               required
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm"
+              className="w-full px-4 py-2 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm"
             />
           </div>
-        <div className="mb-6 flex flex-row items-center gap-4">
-          <div className="mb-6">
-            <label htmlFor="name" className="block text-blue-800 font-semibold mb-2 tracking-wide">
-              Full Name
-            </label>
-            <input
-              type="text"
-              placeholder="Enter your Name"
-              id="name"
-              value={credentials.name}
-              required
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm"
-            />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="name" className="block text-blue-900 font-semibold mb-1 text-sm">
+                Full Name
+              </label>
+              <input
+                type="text"
+                placeholder="John Doe"
+                id="name"
+                value={credentials.name}
+                required
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm"
+              />
             </div>
 
-            <div className="mb-6">
-            <label htmlFor="username" className="block text-blue-800 font-semibold mb-2 tracking-wide">
-              Username
-            </label>
-            <input
-              type="text"
-              placeholder="Enter your username"
-              id="username"
-              value={credentials.username}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm"
-            />
+            <div>
+              <label htmlFor="username" className="block text-blue-900 font-semibold mb-1 text-sm">
+                Username
+              </label>
+              <input
+                type="text"
+                placeholder="johndoe"
+                id="username"
+                value={credentials.username}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm"
+              />
             </div>
           </div>
-         <div className="mb-6 flex flex-row items-center gap-4">
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-blue-800 font-semibold mb-2 tracking-wide">
-              Password
-            </label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              id="password"
-              value={credentials.password}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm"
-            />
-          </div>
-          <div className="mb-6">
-            <label htmlFor="cpassword" className="block text-blue-800 font-semibold mb-2 tracking-wide">
-             Confirm Password
-            </label>
-            <input
-              type="password"
-              placeholder="Re-enter your password"
-              id="cpassword"
-              value={credentials.cpassword}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm"
-            />
-          </div>
-          {error && (
-            <div className="mb-4 text-red-600 font-semibold text-center">{error}</div>
-          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="password" className="block text-blue-900 font-semibold mb-1 text-sm">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Min 6 characters"
+                id="password"
+                minLength={6}
+                value={credentials.password}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="cpassword" className="block text-blue-900 font-semibold mb-1 text-sm">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                placeholder="Re-enter password"
+                id="cpassword"
+                minLength={6}
+                value={credentials.cpassword}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm"
+              />
+            </div>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-lg tracking-wider"
+            disabled={submitting}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition duration-200 text-base mt-2 flex justify-center items-center"
           >
-            Sign Up
+            {submitting ? "Signing up..." : "Sign Up"}
           </button>
-          <div className="mt-4 text-center">
-            <p className="text-blue-800">
-              Already have an account?
-            </p>
-        <span
-          className="cursor-pointer hover:underline text-blue-600 font-semibold"  onClick={() => setLoginMode(true)}>
-          Log In
-        </span>
+
+          <div className="mt-4 text-center text-sm text-gray-600">
+            Already have an account?{" "}
+            <button
+              type="button"
+              className="text-blue-600 font-semibold hover:underline ml-1"
+              onClick={() => setLoginMode(true)}
+            >
+              Log In
+            </button>
           </div>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;

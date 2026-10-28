@@ -1,86 +1,111 @@
+import mongoose from "mongoose";
 import Note from "../models/notes.model.js";
 import { ApiError } from "../Utils/Apierror.js";
 import { asyncHandler } from "../Utils/asynchandler.js";
 import { ApiResponse } from "../Utils/Apiresponse.js";
 
+const getallNotes = asyncHandler(async (req, res) => {
+  // Support filtering between all community blogs and personal blogs
+  const filter = req.query.filter === "my" ? { user: req.user._id } : {};
+  const notes = await Note.find(filter)
+    .populate("user", "name username image")
+    .sort({ createdAt: -1 });
 
-const getallNotes = asyncHandler(async(req,res)=>{
-    
-    const note = await Note.find({user : req.user._id})
-    try{
-        return res.status(200).json(new ApiResponse(200,note,"user's notes fatched succesfully..."))
-    }catch{
-        res.status(400)
-        throw new ApiError(400,'User not found')
-    }
-    
-})
+  return res
+    .status(200)
+    .json(new ApiResponse(200, notes, "Notes fetched successfully"));
+});
 
-const createNote = asyncHandler(async(req,res)=>{
-    const {title,discription,tag} = req.body
+const createNote = asyncHandler(async (req, res) => {
+  const { title, discription, tag } = req.body;
 
-    if(!title || !discription){
-        throw new ApiError(401,"Please fill all the field")
-    }
-    const note = await Note.create({
-        title,
-        discription,
-        tag,
-        user: req.user._id
-    })
+  if (!title || !discription) {
+    throw new ApiError(400, "Please provide both title and description");
+  }
 
-    try{
-        return res.status(200).json(new ApiResponse(200,note,"Note Succesfully Ceated..."))
-    }catch{
-        throw new ApiError(400,"Failed to create Notes...")
-    }
-    
-})
+  const note = await Note.create({
+    title: title.trim(),
+    discription: discription.trim(),
+    tag: tag ? tag.trim() : "General",
+    user: req.user._id,
+  });
 
-const updateNote = asyncHandler(async(req,res)=>{
-    const {title,discription,tag} = req.body
+  const populatedNote = await Note.findById(note._id).populate(
+    "user",
+    "name username image"
+  );
 
+  return res
+    .status(201)
+    .json(new ApiResponse(201, populatedNote, "Note successfully created"));
+});
 
-    const note = await Note.findById(req.params.id)
-     if(!note){
-        throw new ApiError(404,"Not Found")
-    }
+const updateNote = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title, discription, tag } = req.body;
 
-     if (!title && !discription && !tag) {
-  throw new ApiError(400, "Nothing to update");
-    }
-    
-     if(note.user.toString() !== req.user._id.toString()){
-        throw new ApiError(403,"Unauthorized to update this note")
-     }
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid note ID format");
+  }
 
-    const updatednote = await Note.findByIdAndUpdate(req.params.id,{
-        $set:{
-            title,
-            discription,
-            tag
-        }},
-    {
-        new : true
-    })
-   
-    return res.status(200).json(new ApiResponse(200,updatednote,"Note updated succesfully."))
-})
+  const note = await Note.findById(id);
+  if (!note) {
+    throw new ApiError(404, "Note not found");
+  }
 
-const deleteNote = asyncHandler(async(req,res)=>{
+  const noteAuthorId = note.user?._id
+    ? note.user._id.toString()
+    : note.user.toString();
 
-     const note = await Note.findById(req.params.id)
+  if (noteAuthorId !== req.user._id.toString()) {
+    throw new ApiError(403, "Unauthorized to update this note");
+  }
 
-     if(!note){
-        throw new ApiError(404,"Not Found")
-    }
+  if (title === undefined && discription === undefined && tag === undefined) {
+    throw new ApiError(400, "Please provide at least one field to update");
+  }
 
-    if(note.user.toString() !== req.user._id.toString()){
-        throw new ApiError(403,"Unauthorized to update this note")
-     }
+  const updateFields = {};
+  if (title !== undefined) updateFields.title = title.trim();
+  if (discription !== undefined) updateFields.discription = discription.trim();
+  if (tag !== undefined) updateFields.tag = tag.trim();
 
-     await Note.findByIdAndDelete(req.params.id)
+  const updatedNote = await Note.findByIdAndUpdate(
+    id,
+    { $set: updateFields },
+    { new: true, runValidators: true }
+  ).populate("user", "name username image");
 
-     res.status(200).json(200,"","Note Removed succesfully")
-})
-export { getallNotes ,createNote,updateNote,deleteNote}
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedNote, "Note updated successfully"));
+});
+
+const deleteNote = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid note ID format");
+  }
+
+  const note = await Note.findById(id);
+  if (!note) {
+    throw new ApiError(404, "Note not found");
+  }
+
+  const noteAuthorId = note.user?._id
+    ? note.user._id.toString()
+    : note.user.toString();
+
+  if (noteAuthorId !== req.user._id.toString()) {
+    throw new ApiError(403, "Unauthorized to delete this note");
+  }
+
+  await Note.findByIdAndDelete(id);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { id }, "Note removed successfully"));
+});
+
+export { getallNotes, createNote, updateNote, deleteNote };

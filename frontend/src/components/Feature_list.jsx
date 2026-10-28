@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,67 +8,77 @@ const Feature_list = () => {
     dots: true,
     infinite: true,
     autoplay: true,
-    autoplaySpeed: 2000,
-    speed: 800,
+    autoplaySpeed: 3000,
+    speed: 700,
     slidesToShow: 3,
     slidesToScroll: 1,
     swipeToSlide: true,
     pauseOnHover: true,
+    arrows: false,
     responsive: [
       {
         breakpoint: 1024,
-        settings: { slidesToShow: 2 }
+        settings: { slidesToShow: 2 },
       },
       {
         breakpoint: 640,
-        settings: { slidesToShow: 1 }
-      }
-    ]
+        settings: { slidesToShow: 1 },
+      },
+    ],
   };
 
-  const feature = [
+  const features = [
     {
       index: 0,
-      title: "🧠 Smart Storage",
-      description: "Securely save and access your notes from any device, anytime, anywhere.",
+      title: "🧠 Smart Cloud Storage",
+      description: "Securely save and retrieve your blogs and notes from any modern device, anywhere.",
     },
     {
       index: 1,
-      title: "🎯 Clean UI",
-      description: "A minimal and elegant design that keeps your focus on writing.",
+      title: "🎯 Focused, Clean UI",
+      description: "A minimal, elegant aesthetic designed to keep your thoughts clear and centered.",
     },
     {
       index: 2,
-      title: "🔐 Privacy First",
-      description: "Your thoughts are encrypted and safe — no compromise on privacy.",
+      title: "🔐 Author-Controlled Privacy",
+      description: "Strict ownership checks ensure only you can edit or remove your published articles.",
     },
     {
       index: 3,
-      title: "📅 Daily Logs",
-      description: "Organize your goals, track tasks, or write a diary — effortlessly.",
+      title: "🌐 Community Public Feed",
+      description: "Explore diverse perspectives and tutorials shared by fellow thinkers on Noticia.",
     },
     {
       index: 4,
-      title: "📩 Mail Connectivity",
-      description: "Soothing integration with your email for seamless note-taking.",
-    }
+      title: "📩 Instant Notifications",
+      description: "Automated welcome alerts to confirm your account setup and security.",
+    },
   ];
 
   return (
-    <>
-      <h2 className="text-4xl font-bold text-center text-blue-800 mb-10"> What Makes <span className="text-blue-500">Noticia</span> Special</h2>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-4 overflow-hidden">
+      <h3 className="text-2xl sm:text-3xl font-extrabold text-center text-blue-900 mb-8">
+        Why Readers & Writers Love <span className="text-blue-600">Noticia</span>
+      </h3>
 
-      <Slider {...settings}>
-        {feature.map((item) => (
-          <div key={item.index} className="px-4">
-            <div className="bg-gradient-to-br from-blue-300 to-white hover:shadow-2xl transition-all duration-300 shadow-md border border-gray-200 rounded-2xl p-6 h-52 flex flex-col justify-between">
-              <h3 className="text-xl font-semibold text-blue-700">{item.title}</h3>
-              <p className="text-gray-600 text-sm mt-2">{item.description}</p>
+      <div className="pb-6">
+        <Slider {...settings}>
+          {features.map((item) => (
+            <div key={item.index} className="px-3 py-2">
+              <div className="bg-gradient-to-br from-blue-100/90 via-blue-50/50 to-white hover:shadow-xl transition-all duration-300 shadow-sm border border-blue-200/70 rounded-3xl p-6 h-48 flex flex-col justify-between">
+                <div>
+                  <h4 className="text-lg font-bold text-blue-900">{item.title}</h4>
+                  <p className="text-gray-600 text-sm mt-2.5 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+                <div className="h-1 w-10 bg-blue-500 rounded-full"></div>
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
-    </>
+          ))}
+        </Slider>
+      </div>
+    </div>
   );
 };
 

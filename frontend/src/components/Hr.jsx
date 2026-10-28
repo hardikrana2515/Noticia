@@ -1,8 +1,10 @@
-import React from 'react';
+import React from "react";
 
 const Hr = () => {
   return (
-    <hr className="w-full border-t-2 border-blue-300 my-8 opacity-70 shadow-md rounded-full" />
+    <div className="max-w-6xl mx-auto px-4 my-8">
+      <div className="h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+    </div>
   );
 };
 

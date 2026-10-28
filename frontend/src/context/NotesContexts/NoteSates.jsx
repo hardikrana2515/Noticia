@@ -1,93 +1,119 @@
-import noteContext from './notesContext.js'
-import React, { useState } from 'react'
-import API from '../../Api.axios.js'
-
+import NoteContext from "./notesContext.js";
+import React, { useState } from "react";
+import API from "../../Api.axios.js";
 
 const Notestate = ({ children }) => {
-  const keepnotes = []
+  const [notes, setNotes] = useState([]);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [notesLoading, setNotesLoading] = useState(false);
+  const [feedFilter, setFeedFilter] = useState("all"); // 'all' (public blogs) | 'my' (user's blogs)
 
-  const [notes, setNotes] = useState(keepnotes)
-  const [selectedNote, setSelectedNote] = useState(null)
-
-  const fetchNotes = async () => {
-    const res = await API.get("/Notes/notes", {
-      headers: {
-        "authorization": localStorage.getItem("token")
-      },
-      withCredentials: true
-    });
-    // console.log("Register response:", res.data);
-    setNotes(res.data.data);
-  }
+  const fetchNotes = async (filterType = feedFilter) => {
+    setNotesLoading(true);
+    try {
+      const url = filterType === "my" ? "/Notes/notes?filter=my" : "/Notes/notes";
+      const res = await API.get(url);
+      if (Array.isArray(res.data?.data)) {
+        setNotes(res.data.data);
+      } else {
+        setNotes([]);
+      }
+    } catch (err) {
+      console.error(
+        "Failed to fetch notes:",
+        err.response?.data?.message || err.message
+      );
+      setNotes([]);
+    } finally {
+      setNotesLoading(false);
+    }
+  };
 
   const addNotes = async (title, discription, tag) => {
-    // console.log('notes created')
-    const res = await API.post("/Notes/create", { title, discription, tag }, {
-      headers: {
-        "authorization": localStorage.getItem("token")
-      },
-      withCredentials: true
-    });
-    if (res.status !== 200) {
-      // console.log("Register response:", res);
-    }
-    const note = {
-      _id: res.data._id,
-      user: res.data.user,
-      title: title,
-      discription: discription,
-      tag: tag,
-      date: res.data.date
-    };
+    try {
+      const res = await API.post("/Notes/create", {
+        title,
+        discription,
+        tag: tag || "General",
+      });
 
-    setNotes(notes.concat(note));
-  }
+      if (res.data?.data) {
+        setNotes((prevNotes) => [res.data.data, ...prevNotes]);
+        return {
+          success: true,
+          note: res.data.data,
+          message: "Blog published successfully!",
+        };
+      }
+      return { success: false, message: "Failed to create note." };
+    } catch (error) {
+      const message = error.response?.data?.message || "Failed to create note.";
+      return { success: false, message };
+    }
+  };
 
   const deleteNotes = async (id) => {
-    // console.log('notes deleted ' + id)
-    // console.log(id)
-    const res = await API.delete(`/Notes/deletenote/${id}`, {
-      headers: {
-         "authorization": localStorage.getItem("token")
-        },
-      withCredentials: true
-    });
-    const newNotes = notes.filter((note) => {
-      return note._id !== id
-    })
-
-    setNotes(newNotes);
-  }
+    try {
+      await API.delete(`/Notes/deletenote/${id}`);
+      setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
+      if (selectedNote?._id === id) {
+        setSelectedNote(null);
+      }
+      return { success: true, message: "Blog removed successfully!" };
+    } catch (error) {
+      const message = error.response?.data?.message || "Failed to delete note.";
+      return { success: false, message };
+    }
+  };
 
   const editNotes = async (id, title, discription, tag) => {
-    const res = await API.put( `/Notes/updateNote/${id}`, { title, discription, tag }, 
-      {
-        headers: {
-          "authorization": localStorage.getItem("token")
-        },
-        withCredentials: true
-      }
-    );
-    for (let index = 0; index < notes.length; index++) {
-      const element = notes[index];
-      if (element._id === id) {
-        element.title = title;
-        element.discription = discription;
-        element.tag = tag;
-      }
+    try {
+      const res = await API.put(`/Notes/updateNote/${id}`, {
+        title,
+        discription,
+        tag,
+      });
+
+      const updated = res.data?.data;
+      setNotes((prevNotes) =>
+        prevNotes.map((note) =>
+          note._id === id
+            ? updated || { ...note, title, discription, tag }
+            : note
+        )
+      );
+
+      return { success: true, message: "Blog updated successfully!" };
+    } catch (error) {
+      const message = error.response?.data?.message || "Failed to update note.";
+      return { success: false, message };
     }
-  }
+  };
 
   const OpenNote = (id) => {
-    const note = notes.find((note) => note._id === id);
-    return note;
-  }
+    return notes.find((note) => note._id === id);
+  };
 
   return (
-    <noteContext.Provider value={{ notes, setNotes, addNotes, deleteNotes, editNotes, fetchNotes, OpenNote, selectedNote, setSelectedNote }} >
+    <NoteContext.Provider
+      value={{
+        notes,
+        setNotes,
+        addNotes,
+        deleteNotes,
+        editNotes,
+        fetchNotes,
+        OpenNote,
+        selectedNote,
+        setSelectedNote,
+        notesLoading,
+        feedFilter,
+        setFeedFilter,
+      }}
+    >
       {children}
-    </noteContext.Provider>
-  )
-}
+    </NoteContext.Provider>
+  );
+};
 
-export default Notestate
+export default Notestate;

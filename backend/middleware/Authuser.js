@@ -4,26 +4,31 @@ import { asyncHandler } from "../Utils/asynchandler.js";
 import { ApiError } from "../Utils/Apierror.js";
 
 const Auth = asyncHandler(async (req, res, next) => {
-  const auth_token = req.cookies?.token || req.header("authorization");
+  const authHeader = req.header("authorization");
+  const tokenFromHeader = authHeader?.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
 
-  // console.log(auth_token)
-  if (!auth_token) {
-    res.status(401);
-    throw new ApiError(401, "unauthohrized user!");
+  const token = req.cookies?.token || tokenFromHeader;
+
+  if (!token) {
+    throw new ApiError(401, "Unauthorized access! Please login to continue.");
   }
 
+  let decoded;
   try {
-    const decoded = jwt.verify(auth_token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded._id);
-    // console.log(decoded);
-    if (!user) {
-      throw new ApiError(400, "User not valid for this route");
-    }
-    req.user = user;
-    next();
-  } catch {
-    throw new ApiError(401, "nvalid or expired token");
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    throw new ApiError(401, "Invalid or expired session token!");
   }
+
+  const user = await User.findById(decoded._id);
+  if (!user) {
+    throw new ApiError(404, "User account not found for this session!");
+  }
+
+  req.user = user;
+  next();
 });
 
 export { Auth };

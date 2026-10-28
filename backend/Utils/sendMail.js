@@ -1,30 +1,44 @@
-import nodemailer from 'nodemailer'
-// Create a test account or replace with real credentials.
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  secure: true, // true for 465, false for other ports
-  auth: {
-    user: process.env.My_Mail,
-    pass: process.env.Paaskey,
-  },
-});
+import nodemailer from "nodemailer";
 
-// Wrap in an async IIFE so we can use await.
+const getTransporter = () => {
+  const user = process.env.My_Mail;
+  const pass = process.env.Paaskey;
+
+  if (!user || !pass) {
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user,
+      pass,
+    },
+  });
+};
+
 const Mail = async (to, subject, text, html = null) => {
   try {
+    const transporter = getTransporter();
+    if (!transporter) {
+      console.warn("⚠️ Nodemailer credentials not fully configured. Skipping email dispatch.");
+      return;
+    }
 
     const info = await transporter.sendMail({
-      from: '"Noticia " <ranahardikrajeshbhai@gmail.com>',
+      from: `"Noticia" <${process.env.My_Mail}>`,
       to,
       subject,
       text,
       html,
     });
 
-    console.log("✅ Email sent: ", info.messageId);
+    console.log("✅ Email sent successfully:", info.messageId);
   } catch (err) {
-    console.error("❌ Failed to send email", err.message);
+    console.error("❌ Failed to send email:", err.message);
   }
 };
 
-export default Mail
+export default Mail;

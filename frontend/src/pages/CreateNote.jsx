@@ -1,112 +1,134 @@
-import React, { use, useContext, useState } from 'react';
-import noteContext from '../context/NotesContexts/notesContext';
-import Alertmessage from '../components/Alertmessage';
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import noteContext from "../context/NotesContexts/notesContext";
+import Alertmessage from "../components/Alertmessage";
 
 const CreateNote = () => {
+  const navigate = useNavigate();
   const { addNotes } = useContext(noteContext);
-  const [note, setNote] = useState({ title: "", discription: "", tag: "defaulte" });
-  const [btn, setBtn] = useState("Create Note" );
-
-   const [message, setMessage] = useState("");
-   const [head, setHead] = useState("");
+  const [note, setNote] = useState({ title: "", discription: "", tag: "General" });
+  const [submitting, setSubmitting] = useState(false);
+  const [alert, setAlert] = useState({ show: false, message: "", head: "", isError: false });
 
   const onchange = (e) => {
     setNote({ ...note, [e.target.id]: e.target.value });
-
   };
 
-  const alertM = (msg , head)=>{
-        setMessage(msg);
-        setHead(head);
-       
-        setTimeout(() => {
-            setMessage("");
-            setHead("");
-        }, 1000);
+  const showAlert = (message, head, isError = false) => {
+    setAlert({ show: true, message, head, isError });
+    setTimeout(() => {
+      setAlert({ show: false, message: "", head: "", isError: false });
+    }, 2500);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (note.title.trim().length < 3 || note.discription.trim().length < 5) {
+      showAlert(
+        "Title must be at least 3 characters and Content at least 5 characters.",
+        "Validation Error",
+        true
+      );
+      return;
     }
 
-  const onclick = (e) => {
-    
-    e.preventDefault();
-    addNotes(note.title, note.discription, note.tag);
-    // console.log(note);
-    alertM("Note Created Successfully","Success");
-    setNote({ title: "", discription: "", tag: "" });
+    setSubmitting(true);
+    const res = await addNotes(note.title, note.discription, note.tag);
+    setSubmitting(false);
+
+    if (res?.success) {
+      showAlert("Your note was created successfully!", "Success", false);
+      setNote({ title: "", discription: "", tag: "General" });
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } else {
+      showAlert(
+        res?.message || "Failed to create note. Please try again.",
+        "Error",
+        true
+      );
+    }
   };
 
-  const desable = note.title.length < 3 || note.discription.length < 10;
-
-  const BtnClass = () => {
-    return desable ?  "cursor-not-allowed w-full bg-blue-300 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-lg tracking-wider" : "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-lg tracking-wider" ;
-  }
-
+  const isInvalid = note.title.trim().length < 3 || note.discription.trim().length < 5;
 
   return (
-    <div className="flex flex-col items-center justify-start bg-gradient-to-b from-blue-100 to-blue-100 min-h-screen py-5 px-4">
-      
-      <h1 className="text-4xl font-extrabold text-blue-800 mb-10 tracking-wide drop-shadow-sm">
+    <div className="flex flex-col items-center justify-start bg-gradient-to-b from-blue-50 to-white min-h-[85vh] py-10 px-4">
+      <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-8 tracking-wide">
         Create a New Note
       </h1>
 
-      <form className="w-full max-w-2xl bg-white border border-blue-300 rounded-3xl p-8 shadow-2xl transition-all duration-300 hover:shadow-blue-300">
-
-        <div className="mb-6">
-          <label htmlFor="title" className="block text-blue-800 font-semibold mb-2 tracking-wide" >
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-2xl bg-white border border-blue-200 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6"
+      >
+        <div>
+          <label htmlFor="title" className="block text-blue-900 font-semibold mb-2 text-sm">
             Title
           </label>
           <input
             type="text"
             value={note.title}
             id="title"
-            className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm"
-            placeholder="e.g. Shopping list, Meeting notes..."
+            className="w-full px-4 py-2.5 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm"
+            placeholder="e.g. Project Architecture, Meeting Notes..."
             onChange={onchange}
             required
             minLength={3}
           />
         </div>
 
-        <div className="mb-6">
-          <label htmlFor="discription" className="block text-blue-800 font-semibold mb-2 tracking-wide">
+        <div>
+          <label htmlFor="discription" className="block text-blue-900 font-semibold mb-2 text-sm">
             Content
           </label>
           <textarea
             id="discription"
             value={note.discription}
             rows="6"
-            className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm resize-none"
+            className="w-full px-4 py-2.5 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm resize-y"
             placeholder="Start typing your note here..."
             onChange={onchange}
             required
-            minLength={8}
+            minLength={5}
           ></textarea>
         </div>
 
-        <div className="mb-6">
-          <label htmlFor="tag" className="block text-blue-800 font-semibold mb-2 tracking-wide">
+        <div>
+          <label htmlFor="tag" className="block text-blue-900 font-semibold mb-2 text-sm">
             Tag
           </label>
           <input
             type="text"
             id="tag"
             value={note.tag}
-            className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner bg-blue-50 placeholder:text-sm"
-            placeholder="#work #personal #inspiration"
+            className="w-full px-4 py-2.5 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 text-sm"
+            placeholder="e.g. Work, Ideas, Personal"
             onChange={onchange}
           />
         </div>
 
         <button
           type="submit"
-          onClick={onclick}
-          disabled={desable}
-          className={BtnClass()}
-
+          disabled={isInvalid || submitting}
+          className={`w-full font-bold py-3 rounded-xl shadow transition duration-200 text-base ${
+            isInvalid || submitting
+              ? "bg-blue-300 cursor-not-allowed text-white"
+              : "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
+          }`}
         >
-          Create Note
+          {submitting ? "Creating Note..." : "Create Note"}
         </button>
       </form>
-      {message && <Alertmessage message={message} head={head} />}
+
+      {alert.show && (
+        <Alertmessage
+          message={alert.message}
+          head={alert.head}
+          isError={alert.isError}
+        />
+      )}
     </div>
   );
 };

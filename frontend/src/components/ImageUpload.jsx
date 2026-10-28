@@ -1,48 +1,79 @@
-import React, { useState } from 'react'
-import userContext from '../context/UserContext/userContext'
-import { useContext } from 'react'
+import React, { useState, useContext, useRef } from "react";
+import userContext from "../context/UserContext/userContext";
 
 const ImageUpload = () => {
-    const [img, setImg] = useState(null)
-    const { Profilepic } = useContext(userContext)
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [status, setStatus] = useState({ error: "", success: "" });
+  const fileInputRef = useRef(null);
+  const { Profilepic } = useContext(userContext);
 
-    const handleImageUpload = (e) => {
-        e.preventDefault();
-        if (!img) {
-            console.error("No image selected!");
-            return;
-        }
-        const formData = new FormData();
-        formData.append('profilePic', img);
-        // console.log("Form Data:", img);
-        Profilepic(formData)
+  const handleImageUpload = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      setStatus({ error: "Please select an image first!", success: "" });
+      return;
     }
 
+    setUploading(true);
+    setStatus({ error: "", success: "" });
 
-    return (
-        <div className="w-full flex flex-col items-center justify-center mt-6">
-            <form
-                onSubmit={handleImageUpload}
-                className="w-full max-w-sm bg-blue-50  rounded-xl p-6 shadow-sm space-y-4"
-            >
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setImg(e.target.files[0])}
-                    className="block w-full text-sm text-blue-900  file:mr-4 file:py-2 file:px-4  file:rounded-lg file:border-0 file:text-sm file:font-semibold
-                 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition"
-                />
+    const formData = new FormData();
+    formData.append("profilePic", file);
 
-                <button
-                    type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition-all duration-300"
-                >
-                    Upload Image
-                </button>
-            </form>
-        </div>
+    const res = await Profilepic(formData);
+    setUploading(false);
 
-    )
-}
+    if (res?.success) {
+      setStatus({ error: "", success: "Profile picture updated!" });
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setTimeout(() => {
+        setStatus({ error: "", success: "" });
+      }, 3000);
+    } else {
+      setStatus({ error: res?.message || "Failed to upload image", success: "" });
+    }
+  };
 
-export default ImageUpload
+  return (
+    <div className="w-full flex flex-col items-center mt-4">
+      <form
+        onSubmit={handleImageUpload}
+        className="w-full max-w-xs bg-blue-50/60 rounded-xl p-4 border border-blue-100 space-y-3"
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          onChange={(e) => {
+            setFile(e.target.files[0] || null);
+            setStatus({ error: "", success: "" });
+          }}
+          className="block w-full text-xs text-blue-900 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition cursor-pointer"
+        />
+
+        <button
+          type="submit"
+          disabled={uploading || !file}
+          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium py-1.5 px-3 rounded-lg shadow text-xs transition duration-200"
+        >
+          {uploading ? "Uploading..." : "Update Picture"}
+        </button>
+
+        {status.error && (
+          <p className="text-red-500 text-xs text-center font-medium">
+            {status.error}
+          </p>
+        )}
+        {status.success && (
+          <p className="text-green-600 text-xs text-center font-medium">
+            {status.success}
+          </p>
+        )}
+      </form>
+    </div>
+  );
+};
+
+export default ImageUpload;

@@ -1,19 +1,27 @@
-import React,{useState} from 'react'
+import React from "react";
 
-const Alertmessage = ({message,head}) => {
-   
+const Alertmessage = ({ message, head, isError = false }) => {
   return (
-     <div className="fixed inset-0 bg-transparent bg-opacity-30 backdrop-blur-sm flex items-start justify-center m-5 z-50">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-md relative border border-blue-200">
-        <h2 className="text-3xl font-extrabold text-blue-700 mb-4 border-b pb-2">
-          {head}
-        </h2>
-        <p className="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap">
-            {message}
-        </p>
+    <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-bounce duration-300 w-full max-w-md px-4">
+      <div
+        className={`rounded-2xl p-4 shadow-2xl border flex items-start gap-3 ${
+          isError
+            ? "bg-red-50 border-red-300 text-red-800"
+            : "bg-green-50 border-green-300 text-green-800"
+        }`}
+      >
+        <i
+          className={`text-2xl mt-0.5 ${
+            isError ? "ri-error-warning-line text-red-600" : "ri-checkbox-circle-line text-green-600"
+          }`}
+        ></i>
+        <div>
+          <h4 className="font-bold text-sm">{head}</h4>
+          <p className="text-xs mt-0.5 text-gray-700">{message}</p>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Alertmessage
+export default Alertmessage;

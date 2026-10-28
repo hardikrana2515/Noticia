@@ -6,14 +6,13 @@ import Hr from '../components/Hr.jsx'
 import TitelHome from '../components/TitelHome.jsx'
 import Feature_list from '../components/Feature_list.jsx'
 import Auth from '../components/Auth.jsx'
+import { set } from 'date-fns'
 
- const Home = () => {
-   
-   const {auth,setAuth} = useContext(userContext)
-  
-    
+const Home = () => {
+  const { auth } = useContext(userContext);
+
   return (
-     <div>
+    <div className="min-h-[80vh]">
       {auth ? (
         <>
           <Feature_list />
@@ -25,7 +24,7 @@ import Auth from '../components/Auth.jsx'
         <Auth />
       )}
     </div>
-  )
-}
+  );
+};
 
 export default Home
