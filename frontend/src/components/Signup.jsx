@@ -1,8 +1,9 @@
 import React, { useState, useContext } from "react";
+import { Link, Navigate } from "react-router-dom";
 import userContext from "../context/UserContext/userContext.js";
 
 const SignUp = () => {
-  const { signup, setLoginMode } = useContext(userContext);
+  const { signup, setLoginMode, auth } = useContext(userContext);
   const [credentials, setCredentials] = useState({
     email: "",
     phone: "",
@@ -14,6 +15,9 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // Already logged in — send to dashboard
+  if (auth) return <Navigate to="/" replace />;
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.id]: e.target.value });
@@ -36,28 +40,43 @@ const SignUp = () => {
     }
 
     setSubmitting(true);
-    const res = await signup(
-      credentials.email,
-      credentials.phone,
-      credentials.name,
-      credentials.username,
-      credentials.password
-    );
-    setSubmitting(false);
+    try {
+      const res = await signup(
+        credentials.email,
+        credentials.phone,
+        credentials.name,
+        credentials.username,
+        credentials.password
+      );
 
-    if (res?.success) {
-      setSuccessMsg("Account created successfully! Redirecting to login...");
-      setTimeout(() => {
-        setLoginMode(true);
-      }, 1500);
-    } else {
-      setError(res?.message || "Registration failed. Please check your details.");
+      if (res?.success) {
+        setSuccessMsg("Account created! Redirecting to login...");
+        setTimeout(() => {
+          setLoginMode(true);
+          window.location.href = "/login";
+        }, 1500);
+      } else {
+        setError(res?.message || "Registration failed. Please check your details.");
+      }
+    } catch (err) {
+      setError(err?.message || "Registration failed. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col justify-center items-center py-10 px-4 min-h-[75vh]">
-      <div className="w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-blue-200">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex flex-col justify-center items-center py-12 px-4">
+      {/* Back to landing */}
+      <Link
+        to="/landing"
+        className="mb-6 flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 font-semibold transition"
+      >
+        <i className="fa-solid fa-arrow-left text-xs"></i>
+        Back to home
+      </Link>
+
+      <div className="w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-blue-100">
         <div className="flex flex-col items-center mb-6">
           <img
             src="/user.png"
@@ -65,7 +84,7 @@ const SignUp = () => {
             className="h-16 w-16 rounded-full mb-2 object-cover shadow"
           />
           <h2 className="text-2xl font-extrabold text-blue-900">Create an Account</h2>
-          <p className="text-sm text-gray-500">Join Noticia to start taking notes</p>
+          <p className="text-sm text-gray-500 mt-0.5">Join Noticia to start writing</p>
         </div>
 
         {error && (
@@ -184,20 +203,23 @@ const SignUp = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition duration-200 text-base mt-2 flex justify-center items-center"
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition duration-200 text-base mt-2 flex justify-center items-center gap-2"
           >
-            {submitting ? "Signing up..." : "Sign Up"}
+            {submitting ? (
+              <>
+                <i className="fa-solid fa-circle-notch fa-spin text-sm"></i>
+                Signing up...
+              </>
+            ) : (
+              "Sign Up"
+            )}
           </button>
 
           <div className="mt-4 text-center text-sm text-gray-600">
             Already have an account?{" "}
-            <button
-              type="button"
-              className="text-blue-600 font-semibold hover:underline ml-1"
-              onClick={() => setLoginMode(true)}
-            >
+            <Link to="/login" className="text-blue-600 font-semibold hover:underline ml-1">
               Log In
-            </button>
+            </Link>
           </div>
         </form>
       </div>

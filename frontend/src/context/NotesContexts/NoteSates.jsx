@@ -29,13 +29,26 @@ const Notestate = ({ children }) => {
     }
   };
 
-  const addNotes = async (title, discription, tag) => {
+  // Supports either formData or object { title, discription, tag, image }
+  const addNotes = async (titleOrFormData, discription, tag, imageFile) => {
     try {
-      const res = await API.post("/Notes/create", {
-        title,
-        discription,
-        tag: tag || "General",
-      });
+      let payload;
+      let headers = {};
+
+      if (titleOrFormData instanceof FormData) {
+        payload = titleOrFormData;
+        headers = { "Content-Type": "multipart/form-data" };
+      } else {
+        const formData = new FormData();
+        if (titleOrFormData) formData.append("title", titleOrFormData);
+        if (discription) formData.append("discription", discription);
+        if (tag) formData.append("tag", tag || "General");
+        if (imageFile) formData.append("image", imageFile);
+        payload = formData;
+        headers = { "Content-Type": "multipart/form-data" };
+      }
+
+      const res = await API.post("/Notes/create", payload, { headers });
 
       if (res.data?.data) {
         setNotes((prevNotes) => [res.data.data, ...prevNotes]);
@@ -66,20 +79,32 @@ const Notestate = ({ children }) => {
     }
   };
 
-  const editNotes = async (id, title, discription, tag) => {
+  // Supports updating note with optional image / removeImage
+  const editNotes = async (id, titleOrFormData, discription, tag, imageFile, removeImage) => {
     try {
-      const res = await API.put(`/Notes/updateNote/${id}`, {
-        title,
-        discription,
-        tag,
-      });
+      let payload;
+      let headers = {};
+
+      if (titleOrFormData instanceof FormData) {
+        payload = titleOrFormData;
+        headers = { "Content-Type": "multipart/form-data" };
+      } else {
+        const formData = new FormData();
+        if (titleOrFormData !== undefined) formData.append("title", titleOrFormData);
+        if (discription !== undefined) formData.append("discription", discription);
+        if (tag !== undefined) formData.append("tag", tag);
+        if (imageFile) formData.append("image", imageFile);
+        if (removeImage) formData.append("removeImage", "true");
+        payload = formData;
+        headers = { "Content-Type": "multipart/form-data" };
+      }
+
+      const res = await API.put(`/Notes/updateNote/${id}`, payload, { headers });
 
       const updated = res.data?.data;
       setNotes((prevNotes) =>
         prevNotes.map((note) =>
-          note._id === id
-            ? updated || { ...note, title, discription, tag }
-            : note
+          note._id === id ? updated || { ...note, ...payload } : note
         )
       );
 

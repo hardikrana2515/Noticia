@@ -3,6 +3,7 @@ import axios from "axios";
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/iNotebook",
   withCredentials: true,
+  timeout: 15000, // 15 second safety timeout
 });
 
 // Automatically attach Bearer token to all outgoing requests

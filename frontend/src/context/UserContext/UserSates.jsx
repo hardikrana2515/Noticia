@@ -57,7 +57,14 @@ const Userstate = ({ children }) => {
       }
       return { success: false, message: "Invalid response from server" };
     } catch (error) {
-      const message = error.response?.data?.message || "Invalid email or password";
+      let message = "Invalid email or password";
+      if (error.response?.data?.message) {
+        message = error.response.data.message;
+      } else if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
+        message = "Server request timed out. Please check if your backend is running.";
+      } else if (error.message === "Network Error") {
+        message = "Cannot connect to backend server. Make sure http://localhost:5000 is running.";
+      }
       return { success: false, message };
     } finally {
       setLoading(false);
@@ -83,7 +90,14 @@ const Userstate = ({ children }) => {
       }
       return { success: false, message: "Unexpected response from server" };
     } catch (error) {
-      const message = error.response?.data?.message || "Registration failed";
+      let message = "Registration failed";
+      if (error.response?.data?.message) {
+        message = error.response.data.message;
+      } else if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
+        message = "Server request timed out. Please check backend connection.";
+      } else if (error.message === "Network Error") {
+        message = "Cannot connect to backend server. Make sure http://localhost:5000 is running.";
+      }
       return { success: false, message };
     } finally {
       setLoading(false);

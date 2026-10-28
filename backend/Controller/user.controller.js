@@ -7,6 +7,7 @@ import User from "../models/user.moodel.js";
 import { ApiResponse } from "../Utils/Apiresponse.js";
 import Mail from "../Utils/sendMail.js";
 import mailHtmlRes from "../public/mail/htmlMail.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../Utils/cloudinary.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -126,17 +127,29 @@ const UploadImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please select an image file to upload");
   }
 
-  const imageUrl = `/Img/${req.file.filename}`;
+  // Upload to Cloudinary under 'noticia/profiles'
+  const cloudinaryResult = await uploadOnCloudinary(req.file.path, "noticia/profiles");
+  if (!cloudinaryResult || !cloudinaryResult.secure_url) {
+    throw new ApiError(500, "Failed to upload image to Cloudinary");
+  }
+
+  const imageUrl = cloudinaryResult.secure_url;
 
   // Find current user to check for previous image cleanup
   const existingUser = await User.findById(req.user._id);
-  if (existingUser?.image && existingUser.image.startsWith("/Img/")) {
-    const oldFileName = existingUser.image.replace("/Img/", "");
-    const oldFilePath = path.join(__dirname, "../public/Img", oldFileName);
-    if (fs.existsSync(oldFilePath)) {
-      fs.unlink(oldFilePath, (err) => {
-        if (err) console.error("Error cleaning up old profile picture:", err);
-      });
+  if (existingUser?.image) {
+    if (existingUser.image.includes("cloudinary.com")) {
+      deleteFromCloudinary(existingUser.image).catch((err) =>
+        console.error("Cloudinary old avatar deletion error:", err)
+      );
+    } else if (existingUser.image.startsWith("/Img/")) {
+      const oldFileName = existingUser.image.replace("/Img/", "");
+      const oldFilePath = path.join(__dirname, "../public/Img", oldFileName);
+      if (fs.existsSync(oldFilePath)) {
+        fs.unlink(oldFilePath, (err) => {
+          if (err) console.error("Error cleaning up old profile picture:", err);
+        });
+      }
     }
   }
 
@@ -156,7 +169,7 @@ const UploadImage = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { imageUrl, user: updatedUser },
-        "Profile picture updated successfully"
+        "Profile picture updated successfully on Cloudinary"
       )
     );
 });

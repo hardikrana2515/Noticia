@@ -4,17 +4,24 @@ const noteSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: false,
+      default: "",
       trim: true,
     },
     discription: {
       type: String,
-      required: true,
+      required: false,
+      default: "",
       trim: true,
     },
     tag: {
       type: String,
       default: "General",
+      trim: true,
+    },
+    image: {
+      type: String,
+      default: "",
       trim: true,
     },
     Date: {

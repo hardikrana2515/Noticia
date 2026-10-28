@@ -1,8 +1,8 @@
 import nodemailer from "nodemailer";
 
 const getTransporter = () => {
-  const user = process.env.My_Mail;
-  const pass = process.env.Paaskey;
+  const user = process.env.My_Mail ? process.env.My_Mail.replace(/"/g, "").trim() : null;
+  const pass = process.env.Paaskey ? process.env.Paaskey.replace(/"/g, "").trim() : null;
 
   if (!user || !pass) {
     return null;
@@ -27,8 +27,9 @@ const Mail = async (to, subject, text, html = null) => {
       return;
     }
 
+    const senderMail = process.env.My_Mail ? process.env.My_Mail.replace(/"/g, "").trim() : "";
     const info = await transporter.sendMail({
-      from: `"Noticia" <${process.env.My_Mail}>`,
+      from: `"Noticia" <${senderMail}>`,
       to,
       subject,
       text,
@@ -36,6 +37,7 @@ const Mail = async (to, subject, text, html = null) => {
     });
 
     console.log("✅ Email sent successfully:", info.messageId);
+    return info;
   } catch (err) {
     console.error("❌ Failed to send email:", err.message);
   }
