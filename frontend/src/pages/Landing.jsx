@@ -1,30 +1,30 @@
 import React, { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import userContext from "../context/UserContext/userContext.js";
+import { useTheme } from "../context/ThemeContext";
+import ThemeToggle from "../components/ThemeToggle.jsx";
 import Footer from "../components/Footer.jsx";
 
 /* ─── Minimal & Restrained Landing Navbar ─────────────────────────────────── */
 const LandingNav = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { auth } = useContext(userContext);
+  const { isDark, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-blue-100 shadow-xs">
+    <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-blue-100 dark:border-slate-800 dark:border-slate-800 shadow-xs transition-colors duration-200">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-3.5 flex items-center justify-between">
         {/* Brand Logo & Title */}
-        <Link to="/" className="flex items-center gap-2.5 group">
+        <Link to="/" className="flex items-center group py-0.5">
           <img
-            src="/logo1.png"
-            alt="Noticia logo"
-            className="h-9 w-9 rounded-full object-cover border border-blue-200 shadow-xs group-hover:scale-105 transition-transform duration-200"
+            src="/wordloom-logo.png"
+            alt="WordLoom"
+            className="h-8 sm:h-9 w-auto object-contain group-hover:scale-105 transition-transform duration-200"
           />
-          <span className="font-serif-heading font-bold text-xl text-blue-950 tracking-tight group-hover:text-blue-700 transition-colors">
-            Noticia
-          </span>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-blue-900/90">
+        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700 dark:text-slate-200">
           <a
             href="#writing-experience"
             className="hover:text-blue-600 transition-colors py-1"
@@ -65,6 +65,7 @@ const LandingNav = () => {
 
         {/* Action Buttons */}
         <div className="hidden sm:flex items-center gap-3">
+          <ThemeToggle />
           {auth ? (
             <Link
               to="/"
@@ -76,7 +77,7 @@ const LandingNav = () => {
             <>
               <Link
                 to="/login"
-                className="text-sm font-semibold text-blue-900 hover:text-blue-600 px-3.5 py-2 transition"
+                className="text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 px-3.5 py-2 transition"
               >
                 Sign In
               </Link>
@@ -92,21 +93,24 @@ const LandingNav = () => {
         </div>
 
         {/* Mobile menu toggle */}
-        <button
-          type="button"
-          aria-label="Toggle navigation menu"
-          aria-expanded={mobileMenuOpen}
-          className="md:hidden text-blue-950 p-2 text-xl focus:outline-none"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          <i className={mobileMenuOpen ? "fa-solid fa-xmark" : "fa-solid fa-bars"}></i>
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+            className="text-slate-800 dark:text-white p-2 text-xl focus:outline-none"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <i className={mobileMenuOpen ? "fa-solid fa-xmark" : "fa-solid fa-bars"}></i>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-blue-100 bg-white px-6 py-5 space-y-4 shadow-lg animate-fadeIn">
-          <nav className="flex flex-col space-y-3 text-base font-medium text-blue-950">
+        <div className="md:hidden border-t border-blue-100 dark:border-slate-800 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-5 space-y-4 shadow-lg animate-fadeIn">
+          <nav className="flex flex-col space-y-3 text-base font-medium text-blue-950 dark:text-white dark:text-slate-100">
             <a
               href="#writing-experience"
               className="hover:text-blue-600 py-1"
@@ -192,30 +196,30 @@ const Landing = () => {
   if (auth) return <Navigate to="/" replace />;
 
   return (
-    <div className="min-h-screen bg-white text-gray-800 antialiased selection:bg-blue-100 selection:text-blue-900 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 flex flex-col transition-colors duration-200">
       {/* ─── SECTION 1: NAVIGATION & HERO ─────────────────────────────────── */}
       <LandingNav />
 
       <section
         id="hero"
-        className="relative overflow-hidden bg-gradient-to-b from-blue-50/70 via-white to-white border-b border-blue-100/60"
+        className="relative overflow-hidden bg-gradient-to-b from-blue-50/70 via-white to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-b border-blue-100 dark:border-slate-800/60 dark:border-slate-800"
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8 pt-12 pb-20 sm:pt-20 sm:pb-28">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
             
             {/* Left Column: Editorial Headline, Supporting Copy, and CTAs */}
             <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 border border-blue-200/80 text-blue-900 text-xs font-semibold tracking-wide">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 dark:bg-slate-800 border border-blue-200/80 dark:border-slate-700 text-blue-900 dark:text-blue-300 text-xs font-semibold tracking-wide">
                 <i className="fa-solid fa-pen-nib text-blue-600"></i>
                 <span>Personal Notes &amp; Community Blogs</span>
               </div>
 
-              <h1 className="font-serif-heading text-4xl sm:text-5xl lg:text-[3.4rem] font-bold text-blue-950 leading-[1.15] tracking-tight">
+              <h1 className="font-serif-heading text-4xl sm:text-5xl lg:text-[3.4rem] font-bold text-blue-950 dark:text-white leading-[1.15] tracking-tight">
                 Your thoughts deserve <br className="hidden sm:inline" />
                 <span className="text-blue-600 italic">more than a blank page.</span>
               </h1>
 
-              <p className="text-gray-600 text-base sm:text-lg leading-relaxed max-w-xl">
+              <p className="text-gray-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed max-w-xl">
                 Keep your ideas close, write about what matters, and share your perspective with a community of readers.
               </p>
 
@@ -229,7 +233,7 @@ const Landing = () => {
                 </Link>
                 <a
                   href="#community-inspiration"
-                  className="bg-white hover:bg-blue-50/60 text-blue-900 font-bold px-7 py-3.5 rounded-2xl border border-blue-200 hover:border-blue-300 transition duration-200 text-sm flex items-center justify-center gap-2 text-center"
+                  className="bg-white dark:bg-slate-800 hover:bg-blue-50/60 dark:hover:bg-slate-700 text-blue-900 dark:text-slate-100 font-bold px-7 py-3.5 rounded-2xl border border-blue-200 dark:border-slate-700 transition duration-200 text-sm flex items-center justify-center gap-2 text-center"
                 >
                   <i className="fa-solid fa-book-open-reader text-xs text-blue-600"></i>
                   <span>Explore Blogs</span>
@@ -237,7 +241,7 @@ const Landing = () => {
               </div>
 
               {/* Trust & Reassurance details */}
-              <div className="flex flex-wrap items-center gap-y-2 gap-x-6 pt-4 text-xs font-medium text-gray-500 border-t border-blue-100/60">
+              <div className="flex flex-wrap items-center gap-y-2 gap-x-6 pt-4 text-xs font-medium text-gray-500 dark:text-slate-400 border-t border-blue-100 dark:border-slate-800/60">
                 <span className="flex items-center gap-1.5">
                   <i className="fa-solid fa-check text-green-600"></i>
                   No setup friction
@@ -262,15 +266,15 @@ const Landing = () => {
                     alt="A young adult thoughtfully writing notes at a sunlit desk near a window"
                     className="w-full h-80 sm:h-96 lg:h-[430px] object-cover object-[75%_center]"
                   />
-                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md border border-blue-100 rounded-2xl p-3.5 shadow-md flex items-center gap-3">
+                  <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md border border-blue-100 dark:border-slate-800 rounded-2xl p-3.5 shadow-md flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-sm flex-shrink-0">
                       <i className="fa-solid fa-feather-pointed"></i>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-bold text-blue-950 truncate">
+                      <p className="text-xs font-bold text-blue-950 dark:text-white truncate">
                         Write in solitude, share with the world
                       </p>
-                      <p className="text-[11px] text-gray-500 truncate">
+                      <p className="text-[11px] text-gray-500 dark:text-slate-400 truncate">
                         Capture daily notes or publish to the feed
                       </p>
                     </div>
@@ -287,72 +291,72 @@ const Landing = () => {
       {/* ─── SECTION 2: THE WRITING EXPERIENCE ────────────────────────────── */}
       <section
         id="writing-experience"
-        className="py-20 sm:py-24 bg-white border-b border-blue-100/60"
+        className="py-20 sm:py-24 bg-white dark:bg-slate-950 border-b border-blue-100 dark:border-slate-800"
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="max-w-2xl mb-12 text-left">
             <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
               The Writing Studio
             </span>
-            <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 mt-2 mb-3">
+            <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 dark:text-white mt-2 mb-3">
               From a passing thought to something worth keeping.
             </h2>
-            <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
-              Noticia keeps the writing flow straightforward. Give your note a title, organize your thoughts, assign a category tag, and choose whether to keep it as your reference or publish it for fellow thinkers.
+            <p className="text-gray-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
+              WordLoom keeps the writing flow straightforward. Give your note a title, organize your thoughts, assign a category tag, and choose whether to keep it as your reference or publish it for fellow thinkers.
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-50/70 via-white to-blue-50/50 border border-blue-200/90 rounded-3xl p-6 sm:p-10 shadow-lg">
+          <div className="bg-gradient-to-br from-blue-50/70 via-white to-blue-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900/90 border border-blue-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-lg">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               
               {/* Left Column: Step-by-step description */}
               <div className="lg:col-span-5 space-y-6">
                 <div className="border-l-2 border-blue-500 pl-4 py-1">
                   <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Step 01</span>
-                  <h3 className="text-lg font-bold text-blue-950 mt-0.5">Frame your title</h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <h3 className="text-lg font-bold text-blue-950 dark:text-white mt-0.5">Frame your title</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">
                     Give your note or article a clear anchor so you can find it later or catch readers&apos; attention.
                   </p>
                 </div>
 
                 <div className="border-l-2 border-blue-300 pl-4 py-1">
                   <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Step 02</span>
-                  <h3 className="text-lg font-bold text-blue-950 mt-0.5">Write without friction</h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <h3 className="text-lg font-bold text-blue-950 dark:text-white mt-0.5">Write without friction</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">
                     A distraction-free writing box designed for reading comfort, long explanations, or quick code notes.
                   </p>
                 </div>
 
                 <div className="border-l-2 border-blue-300 pl-4 py-1">
                   <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Step 03</span>
-                  <h3 className="text-lg font-bold text-blue-950 mt-0.5">Tag &amp; Publish</h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Group by topic—like <span className="font-semibold text-blue-800">#learning</span>, <span className="font-semibold text-blue-800">#engineering</span>, or <span className="font-semibold text-blue-800">#reflections</span>—and publish instantly to your feed.
+                  <h3 className="text-lg font-bold text-blue-950 dark:text-white mt-0.5">Tag &amp; Publish</h3>
+                  <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">
+                    Group by topic—like <span className="font-semibold text-blue-800 dark:text-blue-300">#learning</span>, <span className="font-semibold text-blue-800 dark:text-blue-300">#engineering</span>, or <span className="font-semibold text-blue-800 dark:text-blue-300">#reflections</span>—and publish instantly to your feed.
                   </p>
                 </div>
               </div>
 
               {/* Right Column: Controlled representation of actual CreateNote Studio */}
               <div className="lg:col-span-7">
-                <div className="bg-white border border-blue-200 rounded-2xl p-6 sm:p-7 shadow-md relative">
-                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-gray-100">
+                <div className="bg-white dark:bg-slate-900 border border-blue-200 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-md relative">
+                  <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-blue-900">
+                      <span className="text-xs font-bold uppercase tracking-wider text-blue-900 dark:text-white">
                         Create a New Blog
                       </span>
                     </div>
-                    <span className="text-[11px] font-medium text-gray-400 bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-md">
+                    <span className="text-[11px] font-medium text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-md">
                       Live Studio Preview
                     </span>
                   </div>
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-blue-900 font-semibold mb-1 text-xs">
+                      <label className="block text-blue-900 dark:text-slate-200 font-semibold mb-1 text-xs">
                         Title
                       </label>
-                      <div className="w-full px-3.5 py-2.5 border border-blue-200 rounded-xl bg-blue-50/40 text-blue-950 text-sm font-semibold">
+                      <div className="w-full px-3.5 py-2.5 border border-blue-200 dark:border-slate-700 rounded-xl bg-blue-50/40 dark:bg-slate-800 text-blue-950 dark:text-white text-sm font-semibold">
                         Designing clean REST APIs in Express 5
                       </div>
                     </div>
@@ -361,7 +365,7 @@ const Landing = () => {
                       <label className="block text-blue-900 font-semibold mb-1 text-xs">
                         Content
                       </label>
-                      <div className="w-full px-3.5 py-2.5 border border-blue-200 rounded-xl bg-blue-50/30 text-gray-700 text-xs sm:text-sm leading-relaxed min-h-[90px]">
+                      <div className="w-full px-3.5 py-2.5 border border-blue-200 dark:border-slate-700 rounded-xl bg-blue-50/30 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs sm:text-sm leading-relaxed min-h-[90px]">
                         Express 5 simplifies route handling with native Promise support in error middleware. When organizing controllers, keeping business logic segregated from database schemas prevents subtle regressions...
                       </div>
                     </div>
@@ -394,20 +398,20 @@ const Landing = () => {
       {/* ─── SECTION 3: PERSONAL NOTES ───────────────────────────────────── */}
       <section
         id="personal-notes"
-        className="py-20 sm:py-24 bg-gradient-to-b from-blue-50/40 via-white to-blue-50/30 border-b border-blue-100/60"
+        className="py-20 sm:py-24 bg-gradient-to-b from-blue-50/40 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900/60 dark:to-slate-950 border-b border-blue-100 dark:border-slate-800"
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Column: Photograph of Personal Note-Taking (noticia-personal-writing.webp) */}
             <div className="lg:col-span-6 order-2 lg:order-1">
-              <div className="relative rounded-3xl overflow-hidden border border-blue-200/80 shadow-xl bg-white">
+              <div className="relative rounded-3xl overflow-hidden border border-blue-200/80 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-900">
                 <img
                   src="/images/landing/noticia-personal-writing.webp"
                   alt="Young professional working on personal reflections and handwritten notes at a tidy desk"
                   className="w-full h-80 sm:h-96 lg:h-[420px] object-cover"
                 />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-blue-100 shadow-xs text-xs font-bold text-blue-950 flex items-center gap-2">
+                <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-blue-100 dark:border-slate-700 shadow-xs text-xs font-bold text-blue-950 dark:text-white flex items-center gap-2">
                   <i className="fa-solid fa-lock text-blue-600 text-[11px]"></i>
                   <span>Author-Owned Workspace</span>
                 </div>
@@ -419,51 +423,51 @@ const Landing = () => {
               <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
                 Personal Workspace
               </span>
-              <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 leading-snug">
+              <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 dark:text-white leading-snug">
                 Keep the ideas you don&apos;t want to lose.
               </h2>
-              <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
-                Not every thought needs an audience. Noticia gives you a clean private place to capture lessons from work, study notes, book takeaways, and personal projects.
+              <p className="text-gray-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
+                Not every thought needs an audience. WordLoom gives you a clean private place to capture lessons from work, study notes, book takeaways, and personal projects.
               </p>
 
               {/* Concrete writing use-case pills */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
-                <div className="p-4 rounded-2xl bg-white border border-blue-100 shadow-xs hover:border-blue-200 transition">
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm mb-2">
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 shadow-xs hover:border-blue-200 dark:hover:border-slate-700 transition">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-blue-400 flex items-center justify-center text-sm mb-2">
                     <i className="fa-solid fa-graduation-cap"></i>
                   </div>
-                  <h4 className="text-sm font-bold text-blue-950">Learning notes</h4>
-                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                  <h4 className="text-sm font-bold text-blue-950 dark:text-white">Learning notes</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-300 mt-1 leading-relaxed">
                     Summarize complex papers, programming quirks, or course lectures.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-white border border-blue-100 shadow-xs hover:border-blue-200 transition">
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm mb-2">
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 shadow-xs hover:border-blue-200 dark:hover:border-slate-700 transition">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-blue-400 flex items-center justify-center text-sm mb-2">
                     <i className="fa-solid fa-diagram-project"></i>
                   </div>
-                  <h4 className="text-sm font-bold text-blue-950">Project logs</h4>
-                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                  <h4 className="text-sm font-bold text-blue-950 dark:text-white">Project logs</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-300 mt-1 leading-relaxed">
                     Document technical decisions, ongoing bugs, and architectural thoughts.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-white border border-blue-100 shadow-xs hover:border-blue-200 transition">
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm mb-2">
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 shadow-xs hover:border-blue-200 dark:hover:border-slate-700 transition">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-blue-400 flex items-center justify-center text-sm mb-2">
                     <i className="fa-solid fa-lightbulb"></i>
                   </div>
-                  <h4 className="text-sm font-bold text-blue-950">Early ideas</h4>
-                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                  <h4 className="text-sm font-bold text-blue-950 dark:text-white">Early ideas</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-300 mt-1 leading-relaxed">
                     Jot down raw fragments before developing them into finished writings.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-white border border-blue-100 shadow-xs hover:border-blue-200 transition">
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm mb-2">
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 shadow-xs hover:border-blue-200 dark:hover:border-slate-700 transition">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-slate-800 text-blue-700 dark:text-blue-400 flex items-center justify-center text-sm mb-2">
                     <i className="fa-solid fa-clock-rotate-left"></i>
                   </div>
-                  <h4 className="text-sm font-bold text-blue-950">Revisit anytime</h4>
-                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                  <h4 className="text-sm font-bold text-blue-950 dark:text-white">Revisit anytime</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-300 mt-1 leading-relaxed">
                     Access your notes from any modern browser with persistent cloud storage.
                   </p>
                 </div>
@@ -478,7 +482,7 @@ const Landing = () => {
       {/* ─── SECTION 4: PUBLISHING & DISCOVERY ────────────────────────────── */}
       <section
         id="publishing-discovery"
-        className="py-20 sm:py-24 bg-white border-b border-blue-100/60"
+        className="py-20 sm:py-24 bg-white dark:bg-slate-950 border-b border-blue-100 dark:border-slate-800"
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
@@ -486,10 +490,10 @@ const Landing = () => {
               <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
                 Community Feed
               </span>
-              <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 mt-2 mb-3">
+              <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 dark:text-white mt-2 mb-3">
                 Your ideas can reach beyond your own page.
               </h2>
-              <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
+              <p className="text-gray-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
                 When you choose to publish, your note appears on the public community timeline. Other members can discover your insights, learn from your experiences, and read your complete post.
               </p>
             </div>
@@ -497,7 +501,7 @@ const Landing = () => {
             <div>
               <Link
                 to="/signup"
-                className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition py-2"
+                className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition py-2"
               >
                 <span>Join to read full articles</span>
                 <i className="fa-solid fa-arrow-right text-xs"></i>
@@ -508,9 +512,9 @@ const Landing = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Illustrative Blog Card 1 */}
-            <div className="bg-white border border-blue-200/90 shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl p-5 flex flex-col justify-between">
+            <div className="bg-white dark:bg-slate-900 border border-blue-200/90 dark:border-slate-800 shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl p-5 flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
+                <div className="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-slate-800 pb-3">
                   <div className="flex items-center space-x-2.5 overflow-hidden">
                     <img
                       src="/default-user.png"
@@ -518,31 +522,31 @@ const Landing = () => {
                       className="h-8 w-8 rounded-full object-cover border border-blue-300 shadow-xs flex-shrink-0"
                     />
                     <div className="truncate">
-                      <p className="text-xs font-bold text-blue-900 truncate">Hardik Rana</p>
-                      <p className="text-[11px] text-gray-500 truncate">@hardik</p>
+                      <p className="text-xs font-bold text-blue-950 dark:text-white truncate">Hardik Rana</p>
+                      <p className="text-[11px] text-gray-500 dark:text-slate-400 truncate">@hardik</p>
                     </div>
                   </div>
-                  <span className="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-semibold px-2 py-0.5 rounded-full">
                     Public
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-blue-900 mb-2 leading-snug">
+                <h3 className="text-lg font-bold text-blue-950 dark:text-white mb-2 leading-snug">
                   Why I switched to async middleware in Express
                 </h3>
-                <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">
+                <p className="text-gray-600 dark:text-slate-300 text-sm line-clamp-3 mb-4 leading-relaxed">
                   Handling Promise rejections manually across dozens of controller files used to cause unhandled exceptions. Adopting the centralized errorHandler simplified debugging significantly.
                 </p>
 
                 <div className="flex items-center justify-between text-xs pt-1">
-                  <span className="bg-blue-50 border border-blue-200 text-blue-700 font-medium px-2.5 py-0.5 rounded-lg">
+                  <span className="bg-blue-50 dark:bg-slate-800 border border-blue-200 dark:border-slate-700 text-blue-700 dark:text-blue-300 font-medium px-2.5 py-0.5 rounded-lg">
                     #backend
                   </span>
                   <span className="text-gray-400 font-medium text-[11px]">Oct 24, 2026</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <Link
                   to="/signup"
                   className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition flex items-center gap-1.5"
@@ -554,9 +558,9 @@ const Landing = () => {
             </div>
 
             {/* Illustrative Blog Card 2 */}
-            <div className="bg-white border border-blue-200/90 shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl p-5 flex flex-col justify-between">
+            <div className="bg-white dark:bg-slate-900 border border-blue-200/90 dark:border-slate-800 shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl p-5 flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
+                <div className="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-slate-800 pb-3">
                   <div className="flex items-center space-x-2.5 overflow-hidden">
                     <img
                       src="/default-user.png"
@@ -564,31 +568,31 @@ const Landing = () => {
                       className="h-8 w-8 rounded-full object-cover border border-blue-300 shadow-xs flex-shrink-0"
                     />
                     <div className="truncate">
-                      <p className="text-xs font-bold text-blue-900 truncate">Priya Shah</p>
-                      <p className="text-[11px] text-gray-500 truncate">@priya_ux</p>
+                      <p className="text-xs font-bold text-blue-950 dark:text-white truncate">Priya Shah</p>
+                      <p className="text-[11px] text-gray-500 dark:text-slate-400 truncate">@priya_ux</p>
                     </div>
                   </div>
-                  <span className="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-semibold px-2 py-0.5 rounded-full">
                     Public
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-blue-900 mb-2 leading-snug">
+                <h3 className="text-lg font-bold text-blue-950 dark:text-white mb-2 leading-snug">
                   What writing daily notes taught me about clarity
                 </h3>
-                <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">
+                <p className="text-gray-600 dark:text-slate-300 text-sm line-clamp-3 mb-4 leading-relaxed">
                   When you force yourself to summarize thoughts in under three paragraphs, ambiguity vanishes. Good writing is simply disciplined thinking on display.
                 </p>
 
                 <div className="flex items-center justify-between text-xs pt-1">
-                  <span className="bg-blue-50 border border-blue-200 text-blue-700 font-medium px-2.5 py-0.5 rounded-lg">
+                  <span className="bg-blue-50 dark:bg-slate-800 border border-blue-200 dark:border-slate-700 text-blue-700 dark:text-blue-300 font-medium px-2.5 py-0.5 rounded-lg">
                     #reflection
                   </span>
                   <span className="text-gray-400 font-medium text-[11px]">Oct 20, 2026</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <Link
                   to="/signup"
                   className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition flex items-center gap-1.5"
@@ -622,7 +626,7 @@ const Landing = () => {
                 <div className="pt-3 border-t border-blue-800/80">
                   <Link
                     to="/signup"
-                    className="w-full bg-white text-blue-950 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-blue-50 transition"
+                    className="w-full bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-blue-950 dark:text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer"
                   >
                     <span>Create Free Account</span>
                     <i className="fa-solid fa-arrow-right text-[10px]"></i>
@@ -639,7 +643,7 @@ const Landing = () => {
       {/* ─── SECTION 5: IDEAS CONNECT PEOPLE ─────────────────────────────── */}
       <section
         id="ideas-connect"
-        className="py-20 sm:py-24 bg-gradient-to-b from-blue-50/50 via-white to-blue-50/60 border-b border-blue-100/60"
+        className="py-20 sm:py-24 bg-gradient-to-b from-blue-50/50 via-white to-blue-50/60 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-b border-blue-100 dark:border-slate-800"
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -652,8 +656,8 @@ const Landing = () => {
                   alt="Two diverse students sharing knowledge and discussing an article over a laptop in a library"
                   className="w-full h-80 sm:h-96 lg:h-[430px] object-cover"
                 />
-                <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md border border-blue-100 rounded-2xl p-4 shadow-sm">
-                  <p className="text-xs font-semibold text-blue-950 leading-snug">
+                <div className="absolute bottom-4 left-4 right-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-blue-100 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+                  <p className="text-xs font-semibold text-blue-950 dark:text-white leading-snug">
                     &ldquo;Writing something down clarifies it for you; sharing it turns it into a bridge for someone else.&rdquo;
                   </p>
                 </div>
@@ -665,15 +669,15 @@ const Landing = () => {
               <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
                 Human Connection
               </span>
-              <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 leading-tight">
+              <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 dark:text-white leading-tight">
                 Different perspectives. <br />
                 <span className="text-blue-600 italic">Ideas worth sharing.</span>
               </h2>
-              <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
+              <p className="text-gray-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
                 Writing is more than saving data in a database. It is how developers capture solutions to obscure bugs, how learners make sense of difficult subjects, and how people share reflections that resonate with others.
               </p>
-              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-                When you share a note on Noticia, you contribute your genuine perspective to a quiet, focused community timeline free of social noise and distraction.
+              <p className="text-gray-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+                When you share a note on WordLoom, you contribute your genuine perspective to a quiet, focused community timeline free of social noise and distraction.
               </p>
 
               <div className="pt-2">
@@ -695,26 +699,26 @@ const Landing = () => {
       {/* ─── SECTION 6: COMMUNITY BLOG PREVIEW ───────────────────────────── */}
       <section
         id="community-inspiration"
-        className="py-20 sm:py-24 bg-white border-b border-blue-100/60"
+        className="py-20 sm:py-24 bg-white dark:bg-slate-950 border-b border-blue-100 dark:border-slate-800"
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="max-w-2xl text-left mb-12">
             <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
               Fresh Reads
             </span>
-            <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 mt-2 mb-3">
+            <h2 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 dark:text-white mt-2 mb-3">
               A little inspiration for your next idea.
             </h2>
-            <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
-              Browse recent excerpts shared by learners, developers, and thinkers in the Noticia community. Click any article to read when you join.
+            <p className="text-gray-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
+              Browse recent excerpts shared by learners, developers, and thinkers in the WordLoom community. Click any article to read when you join.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Sample Card 1 */}
-            <div className="bg-gradient-to-b from-blue-50/50 to-white border border-blue-200/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div className="bg-gradient-to-b from-blue-50/50 to-white dark:from-slate-900 dark:to-slate-900 border border-blue-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
                     <img
                       src="/default-user.png"
@@ -722,22 +726,22 @@ const Landing = () => {
                       className="w-7 h-7 rounded-full object-cover border border-blue-200"
                     />
                     <div>
-                      <p className="text-xs font-bold text-blue-950">Aarav Sharma</p>
+                      <p className="text-xs font-bold text-blue-950 dark:text-white">Aarav Sharma</p>
                       <p className="text-[10px] text-gray-400">@aarav_dev</p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-semibold bg-blue-100/80 text-blue-800 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold bg-blue-100/80 dark:bg-blue-950 dark:text-blue-300 text-blue-800 px-2.5 py-0.5 rounded-full">
                     #architecture
                   </span>
                 </div>
-                <h3 className="font-bold text-base text-blue-950 mb-2 leading-snug">
+                <h3 className="font-bold text-base text-blue-950 dark:text-white mb-2 leading-snug">
                   Separating business logic from Express route controllers
                 </h3>
-                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-4">
+                <p className="text-gray-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
                   Moving database interactions into dedicated service methods keeps controllers concise and makes testing without HTTP mocks trivial.
                 </p>
               </div>
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
                 <span className="text-gray-400 text-[11px]">Oct 27, 2026</span>
                 <Link
                   to="/signup"
@@ -750,9 +754,9 @@ const Landing = () => {
             </div>
 
             {/* Sample Card 2 */}
-            <div className="bg-gradient-to-b from-blue-50/50 to-white border border-blue-200/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div className="bg-gradient-to-b from-blue-50/50 to-white dark:from-slate-900 dark:to-slate-900 border border-blue-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
                     <img
                       src="/default-user.png"
@@ -760,22 +764,22 @@ const Landing = () => {
                       className="w-7 h-7 rounded-full object-cover border border-blue-200"
                     />
                     <div>
-                      <p className="text-xs font-bold text-blue-950">Ananya Roy</p>
+                      <p className="text-xs font-bold text-blue-950 dark:text-white">Ananya Roy</p>
                       <p className="text-[10px] text-gray-400">@ananya_design</p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-semibold bg-blue-100/80 text-blue-800 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold bg-blue-100/80 dark:bg-blue-950 dark:text-blue-300 text-blue-800 px-2.5 py-0.5 rounded-full">
                     #reflections
                   </span>
                 </div>
-                <h3 className="font-bold text-base text-blue-950 mb-2 leading-snug">
+                <h3 className="font-bold text-base text-blue-950 dark:text-white mb-2 leading-snug">
                   The unexpected clarity of writing before designing
                 </h3>
-                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-4">
+                <p className="text-gray-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
                   When I write down user journeys as simple sentences before opening Figma, edge cases reveal themselves without any wireframe drag.
                 </p>
               </div>
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
                 <span className="text-gray-400 text-[11px]">Oct 25, 2026</span>
                 <Link
                   to="/signup"
@@ -788,9 +792,9 @@ const Landing = () => {
             </div>
 
             {/* Sample Card 3 */}
-            <div className="bg-gradient-to-b from-blue-50/50 to-white border border-blue-200/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div className="bg-gradient-to-b from-blue-50/50 to-white dark:from-slate-900 dark:to-slate-900 border border-blue-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
                     <img
                       src="/default-user.png"
@@ -798,22 +802,22 @@ const Landing = () => {
                       className="w-7 h-7 rounded-full object-cover border border-blue-200"
                     />
                     <div>
-                      <p className="text-xs font-bold text-blue-950">Devansh Patel</p>
+                      <p className="text-xs font-bold text-blue-950 dark:text-white">Devansh Patel</p>
                       <p className="text-[10px] text-gray-400">@devansh_p</p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-semibold bg-blue-100/80 text-blue-800 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold bg-blue-100/80 dark:bg-blue-950 dark:text-blue-300 text-blue-800 px-2.5 py-0.5 rounded-full">
                     #learning
                   </span>
                 </div>
-                <h3 className="font-bold text-base text-blue-950 mb-2 leading-snug">
+                <h3 className="font-bold text-base text-blue-950 dark:text-white mb-2 leading-snug">
                   Index strategies for multi-field Mongoose queries
                 </h3>
-                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-4">
+                <p className="text-gray-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
                   A compound index ordered by equality fields first, then range filters, lowered query latency from 140ms down to 8ms in local benchmarks.
                 </p>
               </div>
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
                 <span className="text-gray-400 text-[11px]">Oct 23, 2026</span>
                 <Link
                   to="/signup"
@@ -832,17 +836,17 @@ const Landing = () => {
       {/* ─── SECTION 7: TALKYY CROSS-PROMOTION ───────────────────────────── */}
       <section
         id="talkyy-connection"
-        className="py-16 sm:py-24 bg-blue-50/40 border-b border-blue-100/60"
+        className="py-16 sm:py-24 bg-blue-50/40 dark:bg-slate-900/50 border-b border-blue-100 dark:border-slate-800"
       >
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
-          <div className="bg-white border border-blue-200/90 rounded-3xl p-6 sm:p-10 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 border border-blue-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-center">
               
               {/* Left Column: Talkyy Identity, Supplied Logo & Messaging */}
               <div className="md:col-span-7 space-y-5 text-left">
                 {/* Talkyy Logo Container with Whitespace */}
                 <div className="flex items-center gap-3">
-                  <div className="bg-white border border-blue-100/80 rounded-2xl p-2.5 shadow-xs inline-flex items-center">
+                  <div className="bg-white dark:bg-slate-800 border border-blue-100 dark:border-slate-700 rounded-2xl p-2.5 shadow-xs inline-flex items-center">
                     <img
                       src="/images/brand/talkyy-logo.png"
                       alt="Talkyy - A Calmer Space"
@@ -854,13 +858,13 @@ const Landing = () => {
                   </span>
                 </div>
                 
-                <h2 className="font-serif-heading text-2xl sm:text-3xl font-bold text-blue-950 leading-snug">
+                <h2 className="font-serif-heading text-2xl sm:text-3xl font-bold text-blue-950 dark:text-white leading-snug">
                   Some ideas are written. <br />
                   <span className="text-blue-600 italic">Others are conversations.</span>
                 </h2>
                 
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-                  Noticia gives your ideas a place to grow. Talkyy gives your conversations a place to happen. Discover another way to connect.
+                <p className="text-gray-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+                  WordLoom gives your ideas a place to grow. Talkyy gives your conversations a place to happen. Discover another way to connect.
                 </p>
 
                 <div className="pt-2">
@@ -868,7 +872,7 @@ const Landing = () => {
                     href="https://live-chat-app-alpha.vercel.app/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-blue-200 text-blue-900 font-bold text-xs sm:text-sm bg-white hover:bg-blue-50 hover:border-blue-300 transition shadow-xs group"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-blue-200 dark:border-slate-700 text-blue-900 dark:text-slate-100 font-bold text-xs sm:text-sm bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 transition shadow-xs group"
                   >
                     <span>Explore Talkyy</span>
                     <i className="fa-solid fa-arrow-up-right-from-square text-xs text-blue-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
@@ -884,7 +888,7 @@ const Landing = () => {
                     alt="Two young adults having a friendly conversation at a modern cafe with smartphones"
                     className="w-full h-60 sm:h-72 object-cover"
                   />
-                  <div className="absolute bottom-2.5 left-2.5 right-2.5 bg-white/95 backdrop-blur-sm px-3.5 py-2 rounded-xl border border-blue-100 text-xs font-semibold text-blue-950 flex items-center justify-between shadow-xs">
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5 bg-white/95 backdrop-blur-sm px-3.5 py-2 rounded-xl border border-blue-100 dark:border-slate-800 text-xs font-semibold text-blue-950 dark:text-white flex items-center justify-between shadow-xs">
                     <span className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                       Talkyy App
@@ -903,18 +907,18 @@ const Landing = () => {
       {/* ─── SECTION 8: CLOSING CTA ───────────────────────────────────────── */}
       <section
         id="closing-cta"
-        className="py-20 sm:py-28 bg-gradient-to-b from-white via-blue-50/50 to-blue-50/80 text-center"
+        className="py-20 sm:py-28 bg-gradient-to-b from-white via-blue-50/50 to-blue-50/80 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-center border-t border-blue-100/60 dark:border-slate-800"
       >
         <div className="max-w-3xl mx-auto px-5 sm:px-8 space-y-6">
           <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
             Start Today
           </span>
           
-          <h2 className="font-serif-heading text-3xl sm:text-5xl font-bold text-blue-950 leading-tight">
+          <h2 className="font-serif-heading text-3xl sm:text-5xl font-bold text-blue-950 dark:text-white leading-tight">
             Your next idea starts here.
           </h2>
           
-          <p className="text-gray-600 text-base sm:text-lg leading-relaxed max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed max-w-xl mx-auto">
             Write something worth keeping. Share something worth reading.
           </p>
 
@@ -928,7 +932,7 @@ const Landing = () => {
             </Link>
             <Link
               to="/login"
-              className="w-full sm:w-auto bg-white hover:bg-blue-50 text-blue-900 font-bold px-8 py-3.5 rounded-2xl border border-blue-200 hover:border-blue-300 transition duration-200 text-sm flex items-center justify-center gap-2"
+              className="w-full sm:w-auto bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-blue-900 dark:text-slate-100 font-bold px-8 py-3.5 rounded-2xl border border-blue-200 dark:border-slate-700 transition duration-200 text-sm flex items-center justify-center gap-2"
             >
               <span>Sign In</span>
             </Link>

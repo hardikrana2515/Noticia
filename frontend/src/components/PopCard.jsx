@@ -37,20 +37,20 @@ const PopCard = () => {
   };
 
   const authorName = selectedNote.user?.name || "Community Member";
-  const authorUsername = selectedNote.user?.username || "user";
+  const authorUsername = (selectedNote.user?.username || "user").replace(/^@+/, "");
   const authorAvatar = getAuthorAvatar(selectedNote.user?.image);
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn"
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose();
       }}
     >
-      <div className="bg-white shadow-2xl rounded-3xl w-full max-w-2xl relative border border-blue-200 max-h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 shadow-2xl rounded-3xl w-full max-w-2xl relative border border-blue-200 dark:border-slate-800 max-h-[90vh] flex flex-col overflow-hidden transition-colors">
         {/* Banner image (if blog has one) */}
         {selectedNote.image && (
-          <div className="w-full h-56 sm:h-72 bg-gray-100 flex-shrink-0 relative overflow-hidden">
+          <div className="w-full h-56 sm:h-72 bg-slate-100 dark:bg-slate-800 flex-shrink-0 relative overflow-hidden">
             <img
               src={selectedNote.image}
               alt={selectedNote.title || "Blog banner"}
@@ -63,7 +63,7 @@ const PopCard = () => {
         <button
           type="button"
           aria-label="Close note preview"
-          className="absolute top-4 right-4 bg-white/90 hover:bg-white text-gray-500 hover:text-red-600 transition-colors p-2 rounded-full shadow-md text-lg cursor-pointer z-10"
+          className="absolute top-4 right-4 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 text-slate-500 dark:text-slate-300 hover:text-red-600 transition-colors p-2 rounded-full shadow-md text-lg cursor-pointer z-10"
           onClick={handleClose}
         >
           <i className="fa-solid fa-xmark"></i>
@@ -71,15 +71,15 @@ const PopCard = () => {
 
         <div className="p-6 sm:p-8 flex flex-col flex-grow overflow-y-auto">
           {/* Author info header */}
-          <div className="flex items-center space-x-3 mb-4 pr-10 border-b border-gray-100 pb-3">
+          <div className="flex items-center space-x-3 mb-4 pr-10 border-b border-slate-100 dark:border-slate-800 pb-3">
             <img
               src={authorAvatar}
               alt={authorName}
-              className="h-10 w-10 rounded-full object-cover border-2 border-blue-200 shadow-xs"
+              className="h-10 w-10 rounded-full object-cover border-2 border-blue-200 dark:border-slate-700 shadow-xs"
             />
             <div>
-              <h5 className="text-sm font-bold text-blue-900">{authorName}</h5>
-              <p className="text-xs text-gray-500">
+              <h5 className="text-sm font-bold text-blue-950 dark:text-white">{authorName}</h5>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 @{authorUsername} • {formatDate(selectedNote.Date || selectedNote.createdAt)}
               </p>
             </div>
@@ -87,31 +87,31 @@ const PopCard = () => {
 
           {/* Title */}
           {selectedNote.title && (
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-900 mb-3 break-words font-serif-heading">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-950 dark:text-white mb-3 break-words font-serif-heading">
               {selectedNote.title}
             </h2>
           )}
 
           {/* Tag */}
           <div className="mb-4">
-            <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+            <span className="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 text-xs font-semibold px-3 py-1 rounded-full">
               #{selectedNote.tag || "General"}
             </span>
           </div>
 
           {/* Blog Content body (scrollable) */}
           {selectedNote.discription ? (
-            <div className="overflow-y-auto flex-grow pr-2 text-gray-700 leading-relaxed text-base whitespace-pre-wrap break-words border-t border-gray-100 pt-4">
+            <div className="overflow-y-auto flex-grow pr-2 text-slate-700 dark:text-slate-200 leading-relaxed text-base whitespace-pre-wrap break-words border-t border-slate-100 dark:border-slate-800 pt-4">
               {selectedNote.discription}
             </div>
           ) : (
-            <div className="text-gray-400 italic text-sm pt-2">
+            <div className="text-slate-400 italic text-sm pt-2">
               (Photo note with no caption)
             </div>
           )}
 
           {/* Footer */}
-          <div className="mt-6 pt-3 border-t border-gray-100 flex justify-end">
+          <div className="mt-6 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
             <button
               type="button"
               onClick={handleClose}

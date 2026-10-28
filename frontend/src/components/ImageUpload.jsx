@@ -40,34 +40,49 @@ const ImageUpload = () => {
     <div className="w-full flex flex-col items-center mt-4">
       <form
         onSubmit={handleImageUpload}
-        className="w-full max-w-xs bg-blue-50/60 rounded-xl p-4 border border-blue-100 space-y-3"
+        className="w-full max-w-xs bg-blue-50/70 dark:bg-slate-800/80 rounded-2xl p-4 border border-blue-200/80 dark:border-slate-700 space-y-3 transition-colors"
       >
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          onChange={(e) => {
-            setFile(e.target.files[0] || null);
-            setStatus({ error: "", success: "" });
-          }}
-          className="block w-full text-xs text-blue-900 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition cursor-pointer"
-        />
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+            Change Profile Picture
+          </label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            onChange={(e) => {
+              setFile(e.target.files[0] || null);
+              setStatus({ error: "", success: "" });
+            }}
+            className="block w-full text-xs text-slate-700 dark:text-slate-300 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 dark:file:bg-blue-500 dark:hover:file:bg-blue-600 transition cursor-pointer"
+          />
+        </div>
 
         <button
           type="submit"
           disabled={uploading || !file}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-medium py-1.5 px-3 rounded-lg shadow text-xs transition duration-200"
+          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 text-white font-bold py-2 px-3 rounded-xl shadow-xs text-xs transition duration-200 cursor-pointer flex items-center justify-center gap-1.5"
         >
-          {uploading ? "Uploading..." : "Update Picture"}
+          {uploading ? (
+            <>
+              <i className="fa-solid fa-circle-notch animate-spin text-xs"></i>
+              <span>Uploading to Cloudinary...</span>
+            </>
+          ) : (
+            <>
+              <i className="fa-solid fa-cloud-arrow-up text-xs"></i>
+              <span>Update Picture</span>
+            </>
+          )}
         </button>
 
         {status.error && (
-          <p className="text-red-500 text-xs text-center font-medium">
+          <p className="text-red-500 dark:text-red-400 text-xs text-center font-medium">
             {status.error}
           </p>
         )}
         {status.success && (
-          <p className="text-green-600 text-xs text-center font-medium">
+          <p className="text-green-600 dark:text-green-400 text-xs text-center font-medium">
             {status.success}
           </p>
         )}

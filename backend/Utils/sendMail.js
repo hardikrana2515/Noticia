@@ -29,7 +29,7 @@ const Mail = async (to, subject, text, html = null) => {
 
     const senderMail = process.env.My_Mail ? process.env.My_Mail.replace(/"/g, "").trim() : "";
     const info = await transporter.sendMail({
-      from: `"Noticia" <${senderMail}>`,
+      from: `"WordLoom" <${senderMail}>`,
       to,
       subject,
       text,

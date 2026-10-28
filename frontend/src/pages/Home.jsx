@@ -10,18 +10,18 @@ const Home = () => {
   if (!auth) return <Navigate to="/landing" replace />;
 
   return (
-    <div className="min-h-[85vh] bg-gradient-to-b from-blue-50/50 via-white to-white py-10 px-4 sm:px-6 md:px-10">
+    <div className="min-h-[85vh] bg-gradient-to-b from-blue-50/50 via-white to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-10 px-4 sm:px-6 md:px-10 transition-colors duration-200">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* ─── SECTION A: COMPACT PAGE INTRODUCTION ─────────────────────── */}
         <div className="max-w-2xl text-left space-y-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
+          <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">
             Publishing Workspace
           </span>
-          <h1 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 tracking-tight leading-tight">
+          <h1 className="font-serif-heading text-3xl sm:text-4xl font-bold text-blue-950 dark:text-white tracking-tight leading-tight">
             Discover ideas worth reading.
           </h1>
-          <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-            Explore stories shared by the community, or find the notes and articles you&apos;ve published.
+          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+            Explore stories shared by the WordLoom community, or find the notes and articles you&apos;ve published.
           </p>
         </div>
 

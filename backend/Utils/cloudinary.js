@@ -13,10 +13,10 @@ cloudinary.config({
 /**
  * Uploads a local file to Cloudinary and deletes the temporary local file.
  * @param {string} localFilePath - Path of the file on local disk
- * @param {string} folder - Folder name in Cloudinary (e.g., 'noticia/blogs', 'noticia/profiles')
+ * @param {string} folder - Folder name in Cloudinary (e.g., 'wordloom/blogs', 'wordloom/profiles')
  * @returns {Promise<object|null>} Cloudinary upload response or null on failure
  */
-export const uploadOnCloudinary = async (localFilePath, folder = "noticia") => {
+export const uploadOnCloudinary = async (localFilePath, folder = "wordloom") => {
   try {
     if (!localFilePath) return null;
 

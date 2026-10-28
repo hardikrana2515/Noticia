@@ -28,37 +28,37 @@ const Profile = () => {
 
   return (
     <section className="bg-transparent px-4 py-8 flex items-center justify-center w-full">
-      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-xl border border-blue-100 p-6 sm:p-10 flex flex-col md:flex-row items-center md:items-start gap-8">
+      <div className="w-full max-w-3xl bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-blue-100 dark:border-slate-800 p-6 sm:p-10 flex flex-col md:flex-row items-center md:items-start gap-8 transition-colors">
         {/* Avatar and upload */}
         <div className="flex flex-col items-center md:w-1/3">
           <img
             src={avatarUrl}
             alt={`${user.name}'s Profile`}
-            className="w-36 h-36 rounded-full border-4 border-blue-200 shadow-md object-cover transition-transform hover:scale-105"
+            className="w-36 h-36 rounded-full border-4 border-blue-200 dark:border-slate-700 shadow-md object-cover transition-transform hover:scale-105"
           />
           <ImageUpload />
         </div>
 
         {/* Profile Info */}
-        <div className="flex-1 w-full text-blue-900">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-800 border-b border-blue-100 pb-3 mb-6 text-center md:text-left">
+        <div className="flex-1 w-full text-blue-900 dark:text-slate-100">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-blue-950 dark:text-white border-b border-blue-100 dark:border-slate-800 pb-3 mb-6 text-center md:text-left">
             {user.name}
           </h2>
 
           <div className="space-y-4 text-sm sm:text-base">
-            <div className="flex items-center justify-between sm:justify-start border-b border-gray-100 pb-2">
-              <span className="w-32 font-semibold text-blue-700">Username:</span>
-              <span className="text-gray-700 font-medium">@{user.username}</span>
+            <div className="flex items-center justify-between sm:justify-start border-b border-slate-100 dark:border-slate-800 pb-2">
+              <span className="w-32 font-semibold text-blue-700 dark:text-blue-400">Username:</span>
+              <span className="text-slate-700 dark:text-slate-300 font-medium">@{user.username?.replace(/^@+/, "")}</span>
             </div>
 
-            <div className="flex items-center justify-between sm:justify-start border-b border-gray-100 pb-2">
-              <span className="w-32 font-semibold text-blue-700">Email:</span>
-              <span className="text-gray-700 font-medium">{user.email}</span>
+            <div className="flex items-center justify-between sm:justify-start border-b border-slate-100 dark:border-slate-800 pb-2">
+              <span className="w-32 font-semibold text-blue-700 dark:text-blue-400">Email:</span>
+              <span className="text-slate-700 dark:text-slate-300 font-medium">{user.email}</span>
             </div>
 
-            <div className="flex items-center justify-between sm:justify-start border-b border-gray-100 pb-2">
-              <span className="w-32 font-semibold text-blue-700">Phone:</span>
-              <span className="text-gray-700 font-medium">{user.phone}</span>
+            <div className="flex items-center justify-between sm:justify-start border-b border-slate-100 dark:border-slate-800 pb-2">
+              <span className="w-32 font-semibold text-blue-700 dark:text-blue-400">Phone:</span>
+              <span className="text-slate-700 dark:text-slate-300 font-medium">{user.phone}</span>
             </div>
           </div>
         </div>

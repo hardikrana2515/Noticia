@@ -50,7 +50,7 @@ const Feature_list = () => {
       index: 3,
       icon: "fa-solid fa-globe",
       title: "Community Public Feed",
-      description: "Explore diverse perspectives and tutorials shared by fellow thinkers on Noticia.",
+      description: "Explore diverse perspectives and tutorials shared by fellow thinkers on WordLoom.",
     },
     {
       index: 4,
@@ -63,7 +63,7 @@ const Feature_list = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-4 overflow-hidden">
       <h3 className="text-2xl sm:text-3xl font-extrabold text-center text-blue-900 mb-8">
-        Why Readers & Writers Love <span className="text-blue-600">Noticia</span>
+        Why Readers & Writers Love <span className="text-blue-600">WordLoom</span>
       </h3>
 
       <div className="pb-6">

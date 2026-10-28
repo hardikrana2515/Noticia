@@ -12,6 +12,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Notestate from "./context/NotesContexts/NoteSates";
 import Userstate from "./context/UserContext/UserSates";
+import { ThemeProvider } from "./context/ThemeContext";
 import ProtectedRoute from "./Routes/protectedRoute";
 import "./App.css";
 
@@ -21,8 +22,8 @@ function AppLayout() {
   const isLandingPage = location.pathname === "/landing";
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hide app Navbar on the Landing page — it renders its own header */}
+    <div className="flex flex-col min-h-screen bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+      {/* Hide app Navbar on the Landing page — it renders its own landing header with theme switcher */}
       {!isLandingPage && <Navbar />}
       <main className={isLandingPage ? "flex-1" : "flex-grow"}>
         <Routes>
@@ -57,11 +58,13 @@ function AppLayout() {
 
 function App() {
   return (
-    <Userstate>
-      <Notestate>
-        <AppLayout />
-      </Notestate>
-    </Userstate>
+    <ThemeProvider>
+      <Userstate>
+        <Notestate>
+          <AppLayout />
+        </Notestate>
+      </Userstate>
+    </ThemeProvider>
   );
 }
 

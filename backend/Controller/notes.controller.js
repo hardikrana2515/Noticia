@@ -23,7 +23,7 @@ const createNote = asyncHandler(async (req, res) => {
   // Handle uploaded image (if any)
   let imageUrl = "";
   if (req.file) {
-    const cloudinaryResult = await uploadOnCloudinary(req.file.path, "noticia/blogs");
+    const cloudinaryResult = await uploadOnCloudinary(req.file.path, "wordloom/blogs");
     if (cloudinaryResult && cloudinaryResult.secure_url) {
       imageUrl = cloudinaryResult.secure_url;
     } else {
@@ -92,7 +92,7 @@ const updateNote = asyncHandler(async (req, res) => {
 
   // Handle image update or removal
   if (req.file) {
-    const cloudinaryResult = await uploadOnCloudinary(req.file.path, "noticia/blogs");
+    const cloudinaryResult = await uploadOnCloudinary(req.file.path, "wordloom/blogs");
     if (cloudinaryResult && cloudinaryResult.secure_url) {
       // If previous image was in Cloudinary, delete old one
       if (note.image && note.image.includes("cloudinary.com")) {

@@ -50,8 +50,8 @@ const UserRegister = asyncHandler(async (req, res) => {
 
   // Send welcome email asynchronously (never include plaintext passwords)
   const html = mailHtmlRes(name, username);
-  const msg = `Hi ${name},\n\nWelcome to Noticia! Your account (${username}) has been created successfully.\n\nBest regards,\nThe Noticia Team`;
-  Mail(email, "Welcome to Noticia", msg, html).catch((err) =>
+  const msg = `Hi ${name},\n\nWelcome to WordLoom! Your account (${username}) has been created successfully.\n\nBest regards,\nThe WordLoom Team`;
+  Mail(email, "Welcome to WordLoom", msg, html).catch((err) =>
     console.error("Email dispatch failed:", err.message)
   );
 
@@ -127,8 +127,8 @@ const UploadImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please select an image file to upload");
   }
 
-  // Upload to Cloudinary under 'noticia/profiles'
-  const cloudinaryResult = await uploadOnCloudinary(req.file.path, "noticia/profiles");
+  // Upload to Cloudinary under 'wordloom/profiles'
+  const cloudinaryResult = await uploadOnCloudinary(req.file.path, "wordloom/profiles");
   if (!cloudinaryResult || !cloudinaryResult.secure_url) {
     throw new ApiError(500, "Failed to upload image to Cloudinary");
   }
