@@ -4,9 +4,6 @@
 
 > 🚀 **Live Site:** [https://noticia-livid.vercel.app](https://noticia-livid.vercel.app)
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-noticia--livid.vercel.app-blue?style=for-the-badge&logo=vercel)](https://noticia-livid.vercel.app)
-
-> 🚀 **Live Demo:** [https://noticia-livid.vercel.app](https://noticia-livid.vercel.app)
 
 A modern full-stack MERN (MongoDB, Express, React, Node.js) web application for capturing, organizing, and managing personal notes and stories with JWT session authentication, profile management, password security policies, and image upload.
 
