@@ -1,6 +1,7 @@
 import React from "react";
 import Logout from "../components/Logout";
 import Profile from "../components/Profile";
+import ChangePassword from "../components/ChangePassword";
 
 const Account = () => {
   return (
@@ -19,6 +20,7 @@ const Account = () => {
         </div>
 
         <Profile />
+        <ChangePassword />
         <Logout />
       </div>
     </div>

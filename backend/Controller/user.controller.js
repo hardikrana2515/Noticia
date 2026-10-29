@@ -174,4 +174,104 @@ const UploadImage = asyncHandler(async (req, res) => {
     );
 });
 
-export { UserRegister, UserLogin, UserLogout, getUser, UploadImage };
+const UpdatePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new ApiError(400, "Please provide both current and new password");
+  }
+
+  const user = await User.findById(req.user._id).select("+password");
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // Verify current password
+  const isMatch = await user.comparePassword(currentPassword);
+  if (!isMatch) {
+    throw new ApiError(400, "Current password is incorrect");
+  }
+
+  // Prevent reusing the same password
+  const isSame = await user.comparePassword(newPassword);
+  if (isSame) {
+    throw new ApiError(400, "New password must be different from your current password");
+  }
+
+  // Hash and save new password
+  const hashPassword = await User.hashPassword(newPassword);
+  await User.findByIdAndUpdate(req.user._id, { password: hashPassword });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Password updated successfully"));
+});
+
+const UpdateProfile = asyncHandler(async (req, res) => {
+  const { name, email, phone, username } = req.body;
+
+  if (!name && !email && !phone && !username) {
+    throw new ApiError(400, "Please provide at least one field to update");
+  }
+
+  const currentUser = await User.findById(req.user._id);
+  if (!currentUser) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const updateFields = {};
+
+  if (name) {
+    updateFields.name = name.trim();
+  }
+
+  // Check unique constraints for email, phone, username if they are changing
+  const conflictConditions = [];
+  if (email && email.trim().toLowerCase() !== currentUser.email) {
+    updateFields.email = email.trim().toLowerCase();
+    conflictConditions.push({ email: updateFields.email });
+  }
+
+  if (phone && phone.trim() !== currentUser.phone) {
+    updateFields.phone = phone.trim();
+    conflictConditions.push({ phone: updateFields.phone });
+  }
+
+  if (username && username.trim().toLowerCase() !== currentUser.username) {
+    updateFields.username = username.trim().toLowerCase();
+    conflictConditions.push({ username: updateFields.username });
+  }
+
+  if (conflictConditions.length > 0) {
+    const existingConflict = await User.findOne({
+      _id: { $ne: req.user._id },
+      $or: conflictConditions,
+    });
+
+    if (existingConflict) {
+      if (updateFields.email && existingConflict.email === updateFields.email) {
+        throw new ApiError(400, "An account with this email already exists");
+      }
+      if (updateFields.phone && existingConflict.phone === updateFields.phone) {
+        throw new ApiError(400, "This phone number is already registered");
+      }
+      if (updateFields.username && existingConflict.username === updateFields.username) {
+        throw new ApiError(400, "This username is already taken");
+      }
+      throw new ApiError(400, "User detail conflict with existing account");
+    }
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    { $set: updateFields },
+    { new: true, runValidators: true }
+  ).select("-password");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
+});
+
+export { UserRegister, UserLogin, UserLogout, getUser, UploadImage, UpdatePassword, UpdateProfile };

@@ -1,7 +1,35 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useMemo } from "react";
 import { Link, Navigate } from "react-router-dom";
 import userContext from "../context/UserContext/userContext.js";
 import ThemeToggle from "./ThemeToggle";
+
+// Password policy rules
+const PASSWORD_RULES = [
+  { key: "length", label: "At least 8 characters", test: (p) => p.length >= 8 },
+  { key: "upper", label: "One uppercase letter", test: (p) => /[A-Z]/.test(p) },
+  { key: "number", label: "One number", test: (p) => /[0-9]/.test(p) },
+  { key: "special", label: "One special character (@#$&)", test: (p) => /[@#$&]/.test(p) },
+];
+
+const validatePassword = (password) =>
+  PASSWORD_RULES.every((rule) => rule.test(password));
+
+const PasswordChecklist = ({ password }) => {
+  if (!password) return null;
+  return (
+    <ul className="mt-1.5 space-y-0.5 text-xs">
+      {PASSWORD_RULES.map((rule) => {
+        const passed = rule.test(password);
+        return (
+          <li key={rule.key} className={`flex items-center gap-1.5 ${passed ? "text-green-600 dark:text-green-400" : "text-slate-400 dark:text-slate-500"}`}>
+            <i className={`fa-solid ${passed ? "fa-circle-check" : "fa-circle"} text-[10px]`}></i>
+            {rule.label}
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
 
 const SignUp = () => {
   const [credentials, setCredentials] = useState({
@@ -30,8 +58,8 @@ const SignUp = () => {
     setError("");
     setSuccessMsg("");
 
-    if (credentials.password.length < 6) {
-      setError("Password must be at least 6 characters long");
+    if (!validatePassword(credentials.password)) {
+      setError("Password does not meet the security requirements");
       return;
     }
 
@@ -181,14 +209,15 @@ const SignUp = () => {
               </label>
               <input
                 type="password"
-                placeholder="Min 6 characters"
+                placeholder="Min 8 characters"
                 id="password"
-                minLength={6}
+                minLength={8}
                 value={credentials.password}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2.5 border border-blue-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 dark:bg-slate-800 dark:text-white text-sm"
               />
+              <PasswordChecklist password={credentials.password} />
             </div>
 
             <div>
@@ -199,12 +228,18 @@ const SignUp = () => {
                 type="password"
                 placeholder="Re-enter password"
                 id="cpassword"
-                minLength={6}
+                minLength={8}
                 value={credentials.cpassword}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2.5 border border-blue-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 dark:bg-slate-800 dark:text-white text-sm"
               />
+              {credentials.cpassword && credentials.password !== credentials.cpassword && (
+                <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
+                  <i className="fa-solid fa-circle-xmark text-[10px]"></i>
+                  Passwords do not match
+                </p>
+              )}
             </div>
           </div>
 

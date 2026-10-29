@@ -118,6 +118,50 @@ const Userstate = ({ children }) => {
     }
   };
 
+  const updatePassword = async (currentPassword, newPassword) => {
+    try {
+      const res = await API.put("user/updatePassword", {
+        currentPassword,
+        newPassword,
+      });
+      if (res.status === 200) {
+        return { success: true, message: res.data?.message || "Password updated successfully" };
+      }
+      return { success: false, message: "Unexpected response from server" };
+    } catch (error) {
+      let message = "Failed to update password";
+      if (error.response?.data?.message) {
+        message = error.response.data.message;
+      } else if (error.message === "Network Error") {
+        message = "Cannot connect to server.";
+      }
+      return { success: false, message };
+    }
+  };
+
+  const updateProfile = async (profileData) => {
+    try {
+      const res = await API.put("user/updateProfile", profileData);
+      if (res.status === 200 && res.data?.data) {
+        setUser(res.data.data);
+        return {
+          success: true,
+          user: res.data.data,
+          message: res.data?.message || "Profile updated successfully",
+        };
+      }
+      return { success: false, message: "Unexpected response from server" };
+    } catch (error) {
+      let message = "Failed to update profile";
+      if (error.response?.data?.message) {
+        message = error.response.data.message;
+      } else if (error.message === "Network Error") {
+        message = "Cannot connect to server.";
+      }
+      return { success: false, message };
+    }
+  };
+
   const Profilepic = async (formData) => {
     try {
       const res = await API.post("user/uploadImage", formData, {
@@ -154,6 +198,8 @@ const Userstate = ({ children }) => {
         logout,
         GetUser,
         Profilepic,
+        updatePassword,
+        updateProfile,
         img,
         setImg,
         user,
