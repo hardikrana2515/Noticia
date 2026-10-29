@@ -209,9 +209,9 @@ const UpdatePassword = asyncHandler(async (req, res) => {
 });
 
 const UpdateProfile = asyncHandler(async (req, res) => {
-  const { name, email, phone, username } = req.body;
+  const { name, email, phone } = req.body;
 
-  if (!name && !email && !phone && !username) {
+  if (!name && !email && !phone) {
     throw new ApiError(400, "Please provide at least one field to update");
   }
 
@@ -226,7 +226,7 @@ const UpdateProfile = asyncHandler(async (req, res) => {
     updateFields.name = name.trim();
   }
 
-  // Check unique constraints for email, phone, username if they are changing
+  // Check unique constraints for email, phone if they are changing
   const conflictConditions = [];
   if (email && email.trim().toLowerCase() !== currentUser.email) {
     updateFields.email = email.trim().toLowerCase();
@@ -236,11 +236,6 @@ const UpdateProfile = asyncHandler(async (req, res) => {
   if (phone && phone.trim() !== currentUser.phone) {
     updateFields.phone = phone.trim();
     conflictConditions.push({ phone: updateFields.phone });
-  }
-
-  if (username && username.trim().toLowerCase() !== currentUser.username) {
-    updateFields.username = username.trim().toLowerCase();
-    conflictConditions.push({ username: updateFields.username });
   }
 
   if (conflictConditions.length > 0) {
@@ -255,9 +250,6 @@ const UpdateProfile = asyncHandler(async (req, res) => {
       }
       if (updateFields.phone && existingConflict.phone === updateFields.phone) {
         throw new ApiError(400, "This phone number is already registered");
-      }
-      if (updateFields.username && existingConflict.username === updateFields.username) {
-        throw new ApiError(400, "This username is already taken");
       }
       throw new ApiError(400, "User detail conflict with existing account");
     }

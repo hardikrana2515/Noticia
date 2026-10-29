@@ -71,7 +71,7 @@ userRouter.post("/getuser", Auth, getUser); // Kept for backward compatibility
 
 userRouter.post("/logout", UserLogout);
 
-// Update profile info (name, email, phone, username) — requires auth
+// Update profile info (name, email, phone) — requires auth
 userRouter.put(
   "/updateProfile",
   Auth,
@@ -83,7 +83,6 @@ userRouter.put(
       .trim()
       .matches(/^\d{10}$/)
       .withMessage("Please enter a valid 10-digit phone number"),
-    body("username").optional().trim().notEmpty().withMessage("Username cannot be empty"),
   ],
   validate,
   UpdateProfile

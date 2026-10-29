@@ -80,7 +80,6 @@ const Profile = () => {
     const trimmedName = formData.name.trim();
     const trimmedEmail = formData.email.trim();
     const trimmedPhone = formData.phone.trim();
-    const trimmedUsername = formData.username.trim();
 
     if (!trimmedName) {
       setStatusMessage({ type: "error", text: "Name cannot be empty" });
@@ -100,12 +99,11 @@ const Profile = () => {
       return;
     }
 
-    // Check if anything actually changed
+    // Check if anything actually changed (username is unchangeable)
     const hasChanged =
       trimmedName !== (user.name || "") ||
       trimmedEmail.toLowerCase() !== (user.email || "").toLowerCase() ||
-      trimmedPhone !== (user.phone || "") ||
-      trimmedUsername.toLowerCase() !== (user.username || "").toLowerCase();
+      trimmedPhone !== (user.phone || "");
 
     if (!hasChanged) {
       setIsEditing(false);
@@ -118,7 +116,6 @@ const Profile = () => {
         name: trimmedName,
         email: trimmedEmail,
         phone: trimmedPhone,
-        username: trimmedUsername || undefined,
       });
 
       if (res?.success) {
@@ -281,12 +278,17 @@ const Profile = () => {
               </div>
 
               <div>
-                <label
-                  htmlFor="profile-username"
-                  className="block text-blue-950 dark:text-slate-200 font-semibold mb-1 text-xs sm:text-sm"
-                >
-                  Username
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label
+                    htmlFor="profile-username"
+                    className="block text-blue-950 dark:text-slate-200 font-semibold text-xs sm:text-sm"
+                  >
+                    Username
+                  </label>
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1 font-medium">
+                    <i className="fa-solid fa-lock text-[10px]"></i> Unchangeable
+                  </span>
+                </div>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
                     @
@@ -296,11 +298,15 @@ const Profile = () => {
                     id="profile-username"
                     name="username"
                     value={formData.username}
-                    onChange={handleChange}
-                    required
-                    placeholder="username"
-                    className="w-full pl-8 pr-4 py-2 border border-blue-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50/50 dark:bg-slate-800 dark:text-white text-sm"
+                    readOnly
+                    disabled
+                    tabIndex={-1}
+                    title="Username cannot be changed"
+                    className="w-full pl-8 pr-10 py-2 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 text-sm cursor-not-allowed select-none focus:outline-none"
                   />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <i className="fa-solid fa-lock text-xs"></i>
+                  </span>
                 </div>
               </div>
 
