@@ -16,11 +16,41 @@ const PORT = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Middlewares
-app.use(cors({
-  origin: process.env.Frontend_URL || "http://localhost:5173",
-  credentials: true
-}));
+// Middlewares - CORS configured for Vercel, Render & Localhost
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:5000",
+];
+
+if (process.env.Frontend_URL) {
+  process.env.Frontend_URL.split(",").forEach((u) => {
+    const cleaned = u.trim().replace(/\/$/, "");
+    if (cleaned && !allowedOrigins.includes(cleaned)) {
+      allowedOrigins.push(cleaned);
+    }
+  });
+}
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/$/, "");
+      if (
+        allowedOrigins.includes(cleanOrigin) ||
+        cleanOrigin.endsWith(".vercel.app") ||
+        cleanOrigin.endsWith(".onrender.com") ||
+        cleanOrigin.includes("localhost")
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,6 +59,20 @@ app.use("/Img", express.static(path.join(__dirname, "public/Img")));
 
 // Database connection
 connectDB();
+
+// Root & Health Check endpoints (Essential for Render & Uptime monitors)
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    app: "WordLoom Backend API",
+    message: "Server is running smoothly",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "healthy", timestamp: new Date().toISOString() });
+});
 
 // Routes
 app.use("/iNotebook/user", userRouter);
@@ -48,5 +92,5 @@ app.use((err, req, res, next) => {
 
 // Server listening
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`WordLoom server is running on port ${PORT}`);
 });

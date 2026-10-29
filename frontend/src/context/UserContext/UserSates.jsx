@@ -63,7 +63,7 @@ const Userstate = ({ children }) => {
       } else if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
         message = "Server request timed out. Please check if your backend is running.";
       } else if (error.message === "Network Error") {
-        message = "Cannot connect to backend server. Make sure http://localhost:5000 is running.";
+        message = "Cannot connect to server.";
       }
       return { success: false, message };
     } finally {
@@ -96,7 +96,7 @@ const Userstate = ({ children }) => {
       } else if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
         message = "Server request timed out. Please check backend connection.";
       } else if (error.message === "Network Error") {
-        message = "Cannot connect to backend server. Make sure http://localhost:5000 is running.";
+        message = "Cannot connect to server.";
       }
       return { success: false, message };
     } finally {
